@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offers & Deals | QuickBite Food Delivery</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * {
+    font-family: 'Inter', sans-serif;
+  }
+  .gradient-bg {
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+  .btn-primary {
+    transition: all 0.3s ease;
+  }
+  .btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 15px -3px rgba(255, 107, 53, 0.4);
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+  .mobile-menu-slide {
+    transition: transform 0.3s ease-in-out;
+  }
+  .toast-enter {
+    animation: slideInRight 0.3s ease-out;
+  }
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  .offer-badge {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: .85;
+    }
+  }
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  .accordion-content.active {
+    max-height: 500px;
+  }
+  .filter-btn.active {
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    color: white;
+  }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16 md:h-20">
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+          <svg class="w-8 h-8 md:w-10 md:h-10" viewBox="0 0 40 40" fill="none">
+            <rect width="40" height="40" rx="10" fill="url(#logo-gradient)"/>
+            <path d="M12 20C12 15.5817 15.5817 12 20 12C24.4183 12 28 15.5817 28 20C28 24.4183 24.4183 28 20 28" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="20" cy="20" r="3" fill="white"/>
+            <defs>
+              <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40">
+                <stop stop-color="#FF6B35"/>
+                <stop offset="1" stop-color="#F7931E"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="text-2xl md:text-3xl font-extrabold gradient-text">QuickBite</span>
+        </div>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#" class="text-gray-700 hover:text-[#FF6B35] font-medium transition">Home</a>
+          <a href="#" class="text-gray-700 hover:text-[#FF6B35] font-medium transition">Restaurants</a>
+          <a href="#" class="text-[#FF6B35] font-semibold transition">Offers</a>
+          <a href="#" class="text-gray-700 hover:text-[#FF6B35] font-medium transition">Track Order</a>
+          <button class="gradient-bg text-white px-6 py-2.5 rounded-full font-semibold btn-primary">Sign In</button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t mobile-menu-slide">
+      <div class="px-4 py-3 space-y-3">
+        <a href="#" class="block py-2 text-gray-700 hover:text-[#FF6B35] font-medium">Home</a>
+        <a href="#" class="block py-2 text-gray-700 hover:text-[#FF6B35] font-medium">Restaurants</a>
+        <a href="#" class="block py-2 text-[#FF6B35] font-semibold">Offers</a>
+        <a href="#" class="block py-2 text-gray-700 hover:text-[#FF6B35] font-medium">Track Order</a>
+        <button class="w-full gradient-bg text-white px-6 py-3 rounded-full font-semibold mt-2">Sign In</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="gradient-bg text-white py-12 md:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-block bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
+        🔥 Limited Time Offers
+      </div>
+      <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">Today's Best Deals</h1>
+      <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8">Save big on your favorite meals with exclusive promo codes & limited-time offers from top restaurants</p>
+      <div class="flex flex-wrap justify-center gap-4 text-sm md:text-base">
+        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+          </svg>
+          <span class="font-medium">24/7 Fresh Deals</span>
+        </div>
+        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.625-.119-1.2-.355-1.676-.662C6.602 11.766 6 10.99 6 10c0-.99.602-1.765 1.324-2.246.48-.32 1.054-.545 1.676-.662V7a1 1 0 10-2 0v-.092c.655-.17 1.344-.32 2-.466v3.967c.656.146 1.345.296 2 .466V7a1 1 0 012 0v3.546c.656-.17 1.345-.32 2-.466V9a1 1 0 10-2 0v-.546c.656.17 1.345.32 2 .466V10c0 .99-.602 1.765-1.324 2.246-.48.32-1.054.545-1.676.662v1.967c.621-.117 1.196-.342 1.676-.662C15.398 13.765 16 12.99 16 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0013 9.092V7.092c.655.17 1.344.32 2 .466V6a1 1 0 112 0v3.546c-.655.17-1.344.32-2.001.467V9.092a4.535 4.535 0 001.676-.662C17.398 7.766 18 6.99 18 6c0-.99-.602-1.765-1.324-2.246A4.535 0 0015 3.092V3a1 1 0 10-2 0v.092a4.535 0 00-1.676.662C10.602 4.234 10 5.01 10 6c0 .99.602 1.765 1.324 2.246A4.535 0 0013 8.908v3.941z" clip-rule="evenodd"/>
+          </svg>
+          <span class="font-medium">100% Verified Codes</span>
+        </div>
+        <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+          </svg>
+          <span class="font-medium">Secure Payment</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Banner -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 md:-mt-12 relative z-10">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-orange-100">
+      <div class="grid md:grid-cols-2 gap-0">
+        <div class="gradient-bg p-8 md:p-12 flex flex-col justify-center text-white relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
+          <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full -ml-24 -mb-24"></div>
+          <div class="relative z-10">
+            <span class="inline-block bg-white text-[#FF6B35] px-4 py-1 rounded-full text-xs font-bold mb-4 offer-badge">FEATURED OFFER</span>
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-3">Flat 60% OFF</h2>
+            <p class="text-lg md:text-xl text-white/90 mb-6">On your first 3 orders with QuickBite. Maximum discount up to ₹150 per order</p>
+            <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4 mb-6 border border-white/30">
+              <div class="flex items-center justify-between gap-4">
+                <div>
+                  <p class="text-xs text-white/80 mb-1">Use Promo Code</p>
+                  <p class="text-2xl md:text-3xl font-bold tracking-wider">WELCOME60</p>
+                </div>
+                <button onclick="copyCode('WELCOME60', this)" class="bg-white text-[#FF6B35] px-6 py-3 rounded-lg font-bold hover:bg-gray-100 transition flex items-center gap-2 shrink-0">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                  </svg>
+                  Copy
+                </button>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-4 text-sm">
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                </svg>
+                <span>Valid till 31 Dec 2024</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                </svg>
+                <span>Min. order ₹299</span>
+              </div>
+            </div>
+          </div>
+        <div class="hidden md:block relative">
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop" alt="Food spread" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 md:mt-20">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">All Available Offers</h2>
+        <p class="text-gray-600">Choose from our exclusive deals and save on every order</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="filterOffers('all')" class="filter-btn active px-5 py-2.5 rounded-full font-medium text-sm border border-gray-300 hover:border-[#FF6B35] transition" data-filter="all">All Offers</button>
+        <button onclick="filterOffers('delivery')" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm border border-gray-300 hover:border-[#FF6B35] transition" data-filter="delivery">Free Delivery</button>
+        <button onclick="filterOffers('discount')" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm border border-gray-300 hover:border-[#FF6B35] transition" data-filter="discount">50% Off</button>
+        <button onclick="filterOffers('bogo')" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm border border-gray-300 hover:border-[#FF6B35] transition" data-filter="bogo">Buy 1 Get 1</button>
+        <button onclick="filterOffers('newuser')" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm border border-gray-300 hover:border-[#FF6B35] transition" data-filter="newuser">New User</button>
+      </div>
+    </div>
+
+    <!-- Offers Grid -->
+    <div id="offers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      <!-- Offer Card 1 - Free Delivery -->
+      <div class="offer-card bg-white rounded-2xl shadow-md overflow-hidden card-hover border border-gray-100" data-category="delivery">
+        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">FREE DELIVERY</div>
+            <img src="https://logo.clearbit.com/pizzahut.com" alt="Pizza Hut" class="w-12 h-12 rounded-lg bg-white p-1 shadow-sm">
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Free Delivery</h3>
+          <p class="text-gray-600 text-sm mb-4">Get free delivery on orders from Pizza Hut. No minimum order required!</p>
+          <div class="bg-white rounded-lg p-3 border-2 border-dashed border-blue-300 mb-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-lg text-blue-600">FREEDLV</span>
+              <button onclick="copyCode('FREEDLV', this)" class="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+          <div class="flex items-center justify-between text-xs text-gray-500">
+            <span>Valid till: 15 Dec 2024</span>
+            <span>No min order</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offer Card 2 - 50% Off -->
+      <div class="offer-card bg-white rounded-2xl shadow-md overflow-hidden card-hover border border-gray-100" data-category="discount">
+        <div class="bg-gradient-to-br from-pink-50 to-rose-50 p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="bg-rose-500 text-white px-3 py-1 rounded-full text-xs font-bold">50% OFF</div>
+            <img src="https://logo.clearbit.com/kfc.com" alt="KFC" class="w-12 h-12 rounded-lg bg-white p-1 shadow-sm">
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Flat 50% Off</h3>
+          <p class="text-gray-600 text-sm mb-4">Get 50% off on KFC bucket meals. Maximum discount ₹200 per order</p>
+          <div class="bg-white rounded-lg p-3 border-2 border-dashed border-rose-300 mb-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-lg text-rose-600">KFC50</span>
+              <button onclick="copyCode('KFC50', this)" class="text-rose-600 hover:text-rose-700 font-semibold text-sm flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-xs text-gray-500">
+            <span>Valid till: 20 Dec 2024</span>
+            <span>Min: ₹399</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offer Card 3 - Buy 1 Get 1 -->
+      <div class="offer-card bg-white rounded-2xl shadow-md overflow-hidden card-hover border border-gray-100" data-category="bogo">
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold">BOGO</div>
+            <img src="https://logo.clearbit.com/mcdonalds.com" alt="McDonalds" class="w-12 h-12 rounded-lg bg-white p-1 shadow-sm">
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Buy 1 Get 1 Free</h3>
+          <p class="text-gray-600 text-sm mb-4">Order any burger and get another absolutely free from McDonald's</p>
+          <div class="bg-white rounded-lg p-3 border-2 border-dashed border-emerald-300 mb-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-lg text-emerald-600">MCBOGO</span>
+              <button onclick="copyCode('MCBOGO', this)" class="text-emerald-600 hover:text-emerald-700 font-semibold text-sm flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+          <div class="flex items-center justify-between text-xs text-gray-500">
+            <span>Valid till: 25 Dec 2024</span>
+            <span>Min: ₹199</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offer Card 4 - New User -->
+      <div class="offer-card bg-white rounded-2xl shadow-md overflow-hidden card-hover border border-gray-100" data-category="newuser">
+        <div class="bg-gradient-to-br from-purple-50 to-violet-50 p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="bg-violet-500 text-white px-3 py-1 rounded-full text-xs font-bold">NEW USER</div>
+            <img src="https://logo.clearbit.com/dominos.com" alt="Dominos" class="w-12 h-12 rounded-lg bg-white p-1 shadow-sm">
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">₹150 Off First Order</h3>
+          <p class="text-gray-600 text-sm mb-4">New to QuickBite? Get ₹150 off on your first order from Domino's Pizza</p>
+          <div class="bg-white rounded-lg p-3 border-2 border-dashed border-violet-300 mb-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-lg text-violet-600">NEW150</span>
+              <button onclick="copyCode('NEW150', this)" class="text-violet-600 hover:text-violet-700 font-semibold text-sm flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+          <div class="flex items-center justify-between text-xs text-gray-500">
+            <span>Valid till: 31 Dec 2024</span>
+            <span>Min: ₹299</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offer Card 5 - 50% Off -->
+      <div class="offer-card bg-white rounded-2xl shadow-md overflow-hidden card-hover border border-gray-100" data-category="discount">
+        <div class="bg-gradient-to-br from-orange-50 to-amber-50 p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold">50% OFF</div>
+            <img src="https://logo.clearbit.com/subway.com" alt="Subway" class="w-12 h-12 rounded-lg bg-white p-1 shadow-sm">
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Flat 50% Off</h3>
+          <p class="text-gray-600 text-sm mb-4">Enjoy 50% off on all Subway footlong subs. Max discount ₹180</p>
+          <div class="bg-white rounded-lg p-3 border-2 border-dashed border-amber-300 mb-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-lg text-amber-600">SUB50</span>
+              <button onclick="copyCode('SUB50', this)" class="text-amber-600 hover:text-amber-700 font-semibold text-sm flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-xs text-gray-500">
+            <span>Valid till: 18 Dec 2024</span>
+            <span>Min: ₹349</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Offer Card 6 - Free Delivery -->
+      <div class="offer-card bg-white rounded-2xl shadow-md overflow-hidden card-hover border border-gray-100" data-category="delivery">
+        <div class="bg-gradient-to-br from-teal-50 to-cyan-50 p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="bg-teal-500 text-white px-3 py-1 rounded-full text-xs font-bold">FREE DELIVERY</div>
+            <img src="https://logo.clearbit.com/starbucks.com" alt="Starbucks" class="w-12 h-12 rounded-lg bg-white p-1 shadow-sm">
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Free Delivery</h3>
+          <p class="text-gray-600 text-sm mb-4">Get free delivery on all Starbucks beverages. Valid on orders above ₹250</p>
+          <div class="bg-white rounded-lg p-3 border-2 border-dashed border-teal-300 mb-4">
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-lg text-teal-600">COFFEEFREE</span>
+              <button onclick="copyCode('COFFEEFREE', this)" class="text-teal-600 hover:text-teal-700 font-semibold text-sm flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between text-xs text-gray-500">
+            <span>Valid till: 22 Dec 2024</span>
+            <span>Min: ₹250</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How to Use Section -->
+  <section class="bg-white py-12 md:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How to Use Promo Codes</h2>
+        <p class="text-gray-600 text-lg">Redeem your offers in just 3 simple steps</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Step 1 -->
+        <div class="text-center">
+          <div class="w-16 h-16 md:w-20 md:h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span class="text-3xl md:text-4xl font-bold text-white">1</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Choose Your Offer</h3>
+          <p class="text-gray-600">Browse through our exclusive deals and copy the promo code of your choice</p>
+        </div>
+        <!-- Step 2 -->
+        <div class="text-center">
+          <div class="w-16 h-16 md:w-20 md:h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span class="text-3xl md:text-4xl font-bold text-white">2</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Add to Cart</h3>
+          <p class="text-gray-600">Select your favorite dishes from participating restaurants and add them to your cart</p>
+        </div>
+        <!-- Step 3 -->
+        <div class="text-center">
+          <div class="w-16 h-16 md:w-20 md:h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span class="text-3xl md:text-4xl font-bold text-white">3</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Apply & Save</h3>
+          <p class="text-gray-600">Paste the promo code at checkout and enjoy instant savings on your order</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Terms & Conditions -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center">Terms & Conditions</h2>
+    <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+      <!-- Accordion Item 1 -->
+      <div class="border-b border-gray-200">
+        <button onclick="toggleAccordion(0)" class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-gray-50 transition">
+          <span class="font-semibold text-gray-900 pr-4">General Offer Terms</span>
+          <svg class="w-5 h-5 text-gray-500 transition-transform accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div class="accordion-content px-5 md:px-6">
+          <div class="pb-5 md:pb-6 text-gray-600 space-y-2 text-sm md:text-base">
+            <p>• All offers are valid for a limited period only and subject to availability</p>
+            <p>• Promo codes can be used once per user account unless stated otherwise</p>
+            <p>• Offers cannot be clubbed with other ongoing promotions or discounts</p>
+            <p>• QuickBite reserves the right to modify or cancel any offer without prior notice</p>
+            <p>• Offers are applicable only on the QuickBite app and website</p>
+          </div>
+        </div>
+      </div>
+      <!-- Accordion Item 2 -->
+      <div class="border-b border-gray-200">
+        <button onclick="toggleAccordion(1)" class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-gray-50 transition">
+          <span class="font-semibold text-gray-900 pr-4">Minimum Order & Usage</span>
+          <svg class="w-5 h-5 text-gray-500 transition-transform accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div class="accordion-content px-5 md:px-6">
+          <div class="pb-5 md:pb-6 text-gray-600 space-y-2 text-sm md:text-base">
+            <p>• Minimum order value requirements vary by offer and restaurant</p>
+            <p>• Discount is calculated on the food total excluding taxes and delivery charges</p>
+            <p>• COD orders may not be eligible for certain promotional offers</p>
+            <p>• Partial order cancellations may affect the applied discount</p>
+          </div>
+        </div>
+      </div>
+      <!-- Accordion Item 3 -->
+      <div>
+        <button onclick="toggleAccordion(2)" class="w-full flex items-center justify-between p-5 md:p-6 text-left hover:bg-gray-50 transition">
+          <span class="font-semibold text-gray-900 pr-4">Refund & Cancellation Policy</span>
+          <svg class="w-5 h-5 text-gray-500 transition-transform accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div class="accordion-content px-5 md:px-6">
+          <div class="pb-5 md:pb-6 text-gray-600 space-y-2 text-sm md:text-base">
+            <p>• In case of order cancellation, the promo code will be reinstated if eligible</p>
+            <p>• Refunds will be processed for the amount paid after applying the discount</p>
+            <p>• QuickBite is not liable for any issues arising from restaurant service quality</p>
+            <p>• Disputes related to offers must be raised within 7 days of order delivery</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="gradient-bg py-12 md:py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4">Ready to Save Big?</h2>
+      <p class="text-lg md:text-xl text-white/90 mb-8">Explore thousands of restaurants and apply your favorite offers now</p>
+      <button class="bg-white text-[#FF6B35] px-8 py-4 rounded-full font-bold text-lg btn-primary shadow-xl hover:shadow-2xl">
+        Browse Restaurants
+      </button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+        <!-- Company -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-7 h-7" viewBox="0 0 40 40" fill="none">
+              <rect width="40" height="40" rx="10" fill="url(#footer-logo-gradient)"/>
+              <path d="M12 20C12 15.5817 15.5817 12 20 12C24.4183 12 28 15.5817 28 20C28 24.4183 24.4183 28 20 28" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="20" cy="20" r="3" fill="white"/>
+              <defs>
+                <linearGradient id="footer-logo-gradient" x1="0" y1="0" x2="40" y2="40">
+                  <stop stop-color="#FF6B35"/>
+                  <stop offset="1" stop-color="#F7931E"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span class="text-xl font-extrabold text-white">QuickBite</span>
+          </div>
+          <p class="text-sm">Your favorite food, delivered fast to your doorstep. Best deals guaranteed.</p>
+        </div>
+
+        <!-- Company Links -->
+        <div>
+          <h3 class="text-white font-semibold mb-4">Company</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-[#FF6B35] transition">About Us</a></li>
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Careers</a></li>
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Blog</a></li>
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Press</a></li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div>
+          <h3 class="text-white font-semibold mb-4">Support</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Help Center</a></li>
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Safety</a></li>
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Contact Us</a></li>
+            <li><a href="#" class="hover:text-[#FF6B35] transition">FAQs</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div>
+          <h3 class="text-white font-semibold mb-4">Legal</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Terms & Conditions</a></li>
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Cookie Policy</a></li>
+            <li><a href="#" class="hover:text-[#FF6B35] transition">Offer Terms</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-sm text-center md:text-left">© 2024 QuickBite. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-[#FF6B35] transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="#" class="hover:text-[#FF6B35] transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/></svg>
+          </a>
+          <a href="#" class="hover:text-[#FF6B35] transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+    <div class="bg-gray-900 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[280px] toast-enter">
+      <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <div>
+        <p class="font-semibold">Code Copied!</p>
+        <p class="text-sm text-gray-300">Paste it at checkout to save</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Copy Code Function
+    function copyCode(code, btn) {
+      navigator.clipboard.writeText(code).then(() => {
+        showToast();
+        
+        // Change button text temporarily
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Copied';
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+      });
+    }
+
+    // Toast Notification
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Filter Offers
+    function filterOffers(category) {
+      const cards = document.querySelectorAll('.offer-card');
+      const buttons = document.querySelectorAll('.filter-btn');
+      
+      // Update active button
+      buttons.forEach(btn => {
+        if (btn.dataset.filter === category) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      
+      // Filter cards
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Accordion Toggle
+    function toggleAccordion(index) {
+      const contents = document.querySelectorAll('.accordion-content');
+      const icons = document.querySelectorAll('.accordion-icon');
+      
+      contents[index].classList.toggle('active');
+      icons[index].classList.toggle('rotate-180');
+    }
+  </script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

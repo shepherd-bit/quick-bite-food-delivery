@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickBite - How It Works</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .gradient-bg {
+        background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    }
+    
+    .gradient-bg-light {
+        background: linear-gradient(135deg, rgba(255,107,53,0.08) 0%, rgba(247,147,30,0.08) 100%);
+    }
+    
+    .hero-pattern {
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FF6B35' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .step-card {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .step-card.active {
+        transform: translateX(8px);
+        box-shadow: 0 20px 40px -12px rgba(255,107,53,0.25);
+        border-color: #FF6B35;
+    }
+    
+    @media (max-width: 768px) {
+        .step-card.active {
+            transform: translateY(-4px);
+        }
+    }
+    
+    .progress-line {
+        background: linear-gradient(180deg, #FF6B35 0%, #F7931E 100%);
+        transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .step-dot {
+        transition: all 0.3s ease;
+    }
+    
+    .step-dot.active {
+        background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        transform: scale(1.3);
+        box-shadow: 0 0 0 8px rgba(255,107,53,0.2);
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    .float-animation {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-ring {
+        0% { box-shadow: 0 0 0 0 rgba(255,107,53,0.4); }
+        70% { box-shadow: 0 0 0 15px rgba(255,107,53,0); }
+        100% { box-shadow: 0 0 rgba(255,107,53,0); }
+    }
+    
+    .pulse-ring {
+        animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    
+    .faq-item {
+        transition: all 0.3s ease;
+    }
+    
+    .mockup-screen {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .mockup-screen.hidden {
+        opacity: 0;
+        transform: translateX(20px) scale(0.95);
+        pointer-events: none;
+    }
+</style>
+</head>
+<body class="bg-white text-gray-900 antialiased">
+
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16 md:h-20">
+            <div class="flex items-center gap-8">
+                <a href="#" class="flex items-center gap-2">
+                    <div class="w-9 h-9 md:w-10 md:h-10 gradient-bg rounded-xl flex items-center justify-center">
+                        <i data-lucide="utensils" class="w-5 h-5 md:w-6 md:h-6 text-white"></i>
+                    </div>
+                    <span class="text-2xl md:text-3xl font-extrabold gradient-text">QuickBite</span>
+                </a>
+                <div class="hidden lg:flex items-center gap-8">
+                    <a href="#" class="text-gray-600 hover:text-[#FF6B35] font-medium transition-colors">Home</a>
+                    <a href="#" class="text-[#FF6B35] font-semibold transition-colors">How It Works</a>
+                    <a href="#" class="text-gray-600 hover:text-[#FF6B35] font-medium transition-colors">Restaurants</a>
+                    <a href="#" class="text-gray-600 hover:text-[#FF6B35] font-medium transition-colors">About</a>
+                </div>
+            </div>
+            
+            <div class="hidden lg:flex items-center gap-4">
+                <button class="text-gray-700 hover:text-[#FF6B35] font-semibold transition-colors">Sign In</button>
+                <button class="gradient-bg text-white px-6 py-2.5 rounded-full font-semibold hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 hover:scale-105">
+                    Get Started
+                </button>
+            </div>
+            
+            <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden pb-4 border-t border-gray-100 mt-2">
+            <div class="flex flex-col gap-3 pt-4">
+                <a href="#" class="text-gray-600 hover:text-[#FF6B35] font-medium py-2 px-3 rounded-lg hover:bg-orange-50 transition-all">Home</a>
+                <a href="#" class="text-[#FF6B35] font-semibold py-2 px-3 rounded-lg bg-orange-50">How It Works</a>
+                <a href="#" class="text-gray-600 hover:text-[#FF6B35] font-medium py-2 px-3 rounded-lg hover:bg-orange-50 transition-all">Restaurants</a>
+                <a href="#" class="text-gray-600 hover:text-[#FF6B35] font-medium py-2 px-3 rounded-lg hover:bg-orange-50 transition-all">About</a>
+                <div class="flex flex-col gap-2 pt-2 border-t border-gray-100">
+                    <button class="text-gray-700 hover:text-[#FF6B35] font-semibold py-2.5 px-3 rounded-lg hover:bg-gray-50 transition-all text-left">Sign In</button>
+                    <button class="gradient-bg text-white px-6 py-2.5 rounded-full font-semibold">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- Hero Section - Split Layout -->
+<section class="relative overflow-hidden hero-pattern">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 lg:py-28">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <!-- Text Left -->
+            <div class="text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 bg-orange-50 text-[#FF6B35] px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    Simple. Fast. Delicious.
+                </div>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6">
+                    Your Favorite Food,<br/>
+                    <span class="gradient-text">Delivered in Minutes</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                    From craving to doorstep in 4 easy steps. Join millions who trust QuickBite for lightning-fast delivery from the best local restaurants.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <button class="gradient-bg text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-xl hover:shadow-orange-500/40 transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+                        <i data-lucide="smartphone" class="w-5 h-5"></i>
+                        Download App
+                    </button>
+                    <button class="bg-white text-gray-900 px-8 py-4 rounded-full font-bold text-lg border-2 border-gray-200 hover:border-[#FF6B35] transition-all duration-300 flex items-center justify-center gap-2">
+                        <i data-lucide="play-circle" class="w-5 h-5"></i>
+                        Watch Demo
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Illustration Right -->
+            <div class="relative">
+                <div class="relative float-animation">
+                    <div class="absolute inset-0 gradient-bg rounded-3xl blur-3xl opacity-20"></div>
+                    <div class="relative bg-gradient-to-br from-orange-50 to-orange-100 rounded-3xl p-8 md:p-12">
+                        <svg viewBox="0 0 400 400" class="w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Delivery Scooter -->
+                            <g transform="translate(200, 200)">
+                                <!-- Scooter Body -->
+                                <rect x="-60" y="20" width="120" height="8" rx="4" fill="#FF6B35"/>
+                                <rect x="-40" y="-20" width="80" height="40" rx="8" fill="#FF6B35"/>
+                                
+                                <!-- Wheels -->
+                                <circle cx="-50" cy="35" r="25" fill="#2D3436" stroke="#FF6B35" stroke-width="3"/>
+                                <circle cx="50" cy="35" r="25" fill="#2D3436" stroke="#FF6B35" stroke-width="3"/>
+                                <circle cx="-50" cy="35" r="10" fill="#F7931E"/>
+                                <circle cx="50" cy="35" r="10" fill="#F7931E"/>
+                                
+                                <!-- Driver -->
+                                <circle cx="0" cy="-35" r="20" fill="#F7931E"/>
+                                <rect x="-15" y="-15" width="30" height="40" rx="15" fill="#FF6B35"/>
+                                <rect x="-25" y="-10" width="20" height="35" rx="10" fill="#FF6B35"/>
+                                <rect x="5" y="-10" width="20" height="35" rx="10" fill="#FF6B35"/>
+                                
+                                <!-- Helmet -->
+                                <path d="M -20 -35 Q -20 -55 0 -55 Q 20 -55 20 -35 L 20 -30 L -20 -30 Z" fill="#FF6B35"/>
+                                <rect x="-25" y="-30" width="50" height="5" rx="2" fill="#F7931E"/>
+                                
+                                <!-- Delivery Box -->
+                                <rect x="-35" y="-10" width="70" height="50" rx="8" fill="white" stroke="#FF6B35" stroke-width="2"/>
+                                <text x="0" y="20" text-anchor="middle" font-size="12" font-weight="bold" fill="#FF6B35">QuickBite</text>
+                                
+                                <!-- Motion Lines -->
+                                <line x1="-90" y1="10" x2="-75" y2="10" stroke="#FF6B35" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+                                <line x1="-95" y1="20" x2="-80" y2="20" stroke="#FF6B35" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+                                <line x1="-90" y1="30" x2="-75" y2="30" stroke="#FF6B35" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+                            </g>
+                        </svg>
+                    </div>
+                    
+                    <!-- Floating Elements -->
+                    <div class="absolute -top-4 -right-4 bg-white rounded-2xl shadow-xl p-4 pulse-ring">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+                                <i data-lucide="clock" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-500 font-medium">Avg. Delivery</div>
+                                <div class="text-2xl font-extrabold gradient-text">24 min</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-500 font-medium">Order Status</div>
+                                <div class="text-lg font-bold text-gray-900">On the way!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why QuickBite Stats Section -->
+<section class="py-16 md:py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Why Choose <span class="gradient-text">QuickBite</span></h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Trusted by millions across the country for fast, reliable food delivery</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+                <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center mb-6">
+                    <i data-lucide="users-round" class="w-7 h-7 text-white"></i>
+                </div>
+                <div class="text-5xl md:text-6xl font-extrabold gradient-text mb-2 counter" data-target="2">0</div>
+                <div class="text-2xl font-bold text-gray-900 mb-2">Million+</div>
+                <p class="text-gray-600">Active customers enjoying QuickBite every month</p>
+            </div>
+            
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+                <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center mb-6">
+                    <i data-lucide="store" class="w-7 h-7 text-white"></i>
+                </div>
+                <div class="text-5xl md:text-6xl font-extrabold gradient-text mb-2 counter" data-target="15000">0</div>
+                <div class="text-2xl font-bold text-gray-900 mb-2">Partners</div>
+                <p class="text-gray-600">Restaurants and kitchens serving your cravings</p>
+            </div>
+            
+            <div class="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100">
+                <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center mb-6">
+                    <i data-lucide="timer" class="w-7 h-7 text-white"></i>
+                </div>
+                <div class="text-5xl md:text-6xl font-extrabold gradient-text mb-2 counter" data-target="24">0</div>
+                <div class="text-2xl font-bold text-gray-900 mb-2">Minutes</div>
+                <p class="text-gray-600">Average delivery time across all cities</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works - Timeline/Stepper -->
+<section class="py-16 md:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 md:mb-20">
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-4">How QuickBite Works</h2>
+            <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">Four simple steps from hunger to happiness</p>
+        </div>
+        
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+            <!-- Timeline Steps -->
+            <div class="relative">
+                <!-- Progress Line -->
+                <div class="absolute left-6 md:left-8 top-8 bottom-8 w-1 bg-gray-200 rounded-full">
+                    <div id="progress-line" class="progress-line w-full rounded-full" style="height: 0%"></div>
+                </div>
+                
+                <div class="space-y-8">
+                    <!-- Step 1 -->
+                    <div class="step-card relative pl-20 md:pl-24 cursor-pointer bg-white rounded-3xl p-6 border-2 border-gray-100" data-step="1">
+                        <div class="step-dot absolute left-0 md:left-2 top-6 w-12 h-12 md:w-14 md:h-14 bg-gray-200 rounded-full flex items-center justify-center font-bold text-lg text-gray-500">
+                            1
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 gradient-bg-light rounded-2xl flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="map-pin" class="w-6 h-6 text-[#FF6B35]"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">Choose Your Location</h3>
+                                <p class="text-gray-600 leading-relaxed">Enter your address or let us detect your location. We'll show you all the best restaurants delivering near you with real-time availability.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="step-card relative pl-20 md:pl-24 cursor-pointer bg-white rounded-3xl p-6 border-2 border-gray-100" data-step="2">
+                        <div class="step-dot absolute left-0 md:left-2 top-6 w-12 h-12 md:w-14 md:h-14 bg-gray-200 rounded-full flex items-center justify-center font-bold text-lg text-gray-500">
+                            2
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 gradient-bg-light rounded-2xl flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="utensils-crossed" class="w-6 h-6 text-[#FF6B35]"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">Browse & Select</h3>
+                                <p class="text-gray-600 leading-relaxed">Explore thousands of dishes from top-rated restaurants. Filter by cuisine, price, dietary needs, or ratings. Add favorites to your cart in one tap.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="step-card relative pl-20 md:pl-24 cursor-pointer bg-white rounded-3xl p-6 border-2 border-gray-100" data-step="3">
+                        <div class="step-dot absolute left-0 md:left-2 top-6 w-12 h-12 md:w-14 md:h-14 bg-gray-200 rounded-full flex items-center justify-center font-bold text-lg text-gray-500">
+                            3
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 gradient-bg-light rounded-2xl flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="credit-card" class="w-6 h-6 text-[#FF6B35]"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">Checkout Securely</h3>
+                                <p class="text-gray-600 leading-relaxed">Review your order, apply promo codes, and pay securely with cards, UPI, or cash on delivery. Track your order live from kitchen to doorstep.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4 -->
+                    <div class="step-card relative pl-20 md:pl-24 cursor-pointer bg-white rounded-3xl p-6 border-2 border-gray-100" data-step="4">
+                        <div class="step-dot absolute left-0 md:left-2 top-6 w-12 h-12 md:w-14 md:h-14 bg-gray-200 rounded-full flex items-center justify-center font-bold text-lg text-gray-500">
+                            4
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 gradient-bg-light rounded-2xl flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="bike" class="w-6 h-6 text-[#FF6B35]"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">Enjoy Your Meal</h3>
+                                <p class="text-gray-600 leading-relaxed">Our delivery partner brings your food hot and fresh. Rate your experience and earn loyalty points for your next order. Bon appétit!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- App Mockups -->
+            <div class="lg:sticky lg:top-24">
+                <div class="relative">
+                    <!-- Phone Frame -->
+                    <div class="relative mx-auto max-w-[320px]">
+                        <div class="absolute inset-0 gradient-bg rounded-[3rem] blur-2xl opacity-20"></div>
+                        <div class="relative bg-gray-900 rounded-[3rem] p-3 shadow-2xl">
+                            <div class="bg-white rounded-[2.5rem] overflow-hidden aspect-[9/19.5] relative">
+                                <!-- Mockup Screen 1 -->
+                                <div class="mockup-screen absolute inset-0 bg-gradient-to-br from-orange-50 to-white p-6 flex flex-col" data-screen="1">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="text-xs font-bold text-gray-400">9:41</div>
+                                        <div class="flex gap-1">
+                                            <div class="w-4 h-3 bg-gray-900 rounded-sm"></div>
+                                            <div class="w-4 h-3 bg-gray-900 rounded-sm"></div>
+                                            <div class="w-4 h-3 bg-gray-900 rounded-sm"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2 mb-6">
+                                        <i data-lucide="map-pin" class="w-5 h-5 text-[#FF6B35]"></i>
+                                        <div>
+                                            <div class="text-xs text-gray-500">Deliver to</div>
+                                            <div class="text-sm font-bold">Home - 123 Main St</div>
+                                        </div>
+                                    <div class="bg-white rounded-2xl p-3 shadow-sm mb-4">
+                                        <div class="flex items-center gap-2 text-gray-400">
+                                            <i data-lucide="search" class="w-4 h-4"></i>
+                                            <span class="text-sm">Search for restaurants...</span>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3 mb-4">
+                                        <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                            <div class="w-12 h-12 gradient-bg rounded-xl mb-2"></div>
+                                            <div class="text-xs font-bold">Pizza</div>
+                                        </div>
+                                        <div class="bg-white rounded-2xl p-4 shadow-sm">
+                                            <div class="w-12 h-12 gradient-bg rounded-xl mb-2"></div>
+                                            <div class="text-xs font-bold">Burgers</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 bg-white rounded-2xl p-4 shadow-sm">
+                                        <div class="text-xs font-bold text-gray-400 mb-2">NEAR YOU</div>
+                                        <div class="space-y-3">
+                                            <div class="flex gap-3">
+                                                <div class="w-16 h-16 bg-orange-100 rounded-xl"></div>
+                                                <div class="flex-1">
+                                                    <div class="h-3 bg-gray-200 rounded mb-2"></div>
+                                                    <div class="h-2 bg-gray-100 rounded w-3/4"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mockup Screen 2 -->
+                                <div class="mockup-screen hidden absolute inset-0 bg-gradient-to-br from-orange-50 to-white p-6 flex flex-col" data-screen="2">
+                                    <div class="flex items-center gap-3 mb-4">
+                                        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                                        <div class="text-sm font-bold">Burger Palace</div>
+                                    </div>
+                                    <div class="h-32 gradient-bg rounded-2xl mb-4"></div>
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">4.5 ★</div>
+                                        <div class="text-xs text-gray-500">30-35 min</div>
+                                    </div>
+                                    <div class="flex-1 space-y-3 overflow-auto">
+                                        <div class="bg-white rounded-2xl p-4 shadow-sm flex gap-3">
+                                            <div class="flex-1">
+                                                <div class="text-sm font-bold mb-1">Classic Burger</div>
+                                                <div class="text-xs text-gray-500 mb-2">$8.99</div>
+                                                <div class="text-xs gradient-text font-bold">+ Add</div>
+                                            </div>
+                                            <div class="w-20 h-20 bg-orange-100 rounded-xl"></div>
+                                        </div>
+                                        <div class="bg-white rounded-2xl p-4 shadow-sm flex gap-3">
+                                            <div class="flex-1">
+                                                <div class="text-sm font-bold mb-1">Cheese Fries</div>
+                                                <div class="text-xs text-gray-500 mb-2">$4.99</div>
+                                                <div class="text-xs gradient-text font-bold">+ Add</div>
+                                            </div>
+                                            <div class="w-20 h-20 bg-orange-100 rounded-xl"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Mockup Screen 3 -->
+                                <div class="mockup-screen hidden absolute inset-0 bg-gradient-to-br from-orange-50 to-white p-6 flex flex-col" data-screen="3">
+                                    <div class="text-center mb-6">
+                                        <div class="text-lg font-bold">Checkout</div>
+                                    </div>
+                                    <div class="bg-white rounded-2xl p-4 shadow-sm mb-4">
+                                        <div class="text-xs text-gray-500 mb-2">DELIVER TO</div>
+                                        <div class="text-sm font-bold">123 Main St, Apt 4B</div>
+                                    </div>
+                                    <div class="bg-white rounded-2xl p-4 shadow-sm mb-4">
+                                        <div class="text-xs text-gray-500 mb-3">PAYMENT METHOD</div>
+                                        <div class="flex items-center gap-3 bg-orange-50 p-3 rounded-xl">
+                                            <i data-lucide="credit-card" class="w-5 h-5 text-[#FF6B35]"></i>
+                                            <div class="text-sm font-bold">**** 4589</div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white rounded-2xl p-4 shadow-sm mb-4 flex-1">
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Subtotal</span>
+                                                <span class="font-bold">$13.98</span>
+                                            </div>
+                                            <div class="flex justify-between">
+                                                <span class="text-gray-600">Delivery</span>
+                                                <span class="font-bold">$2.00</span>
+                                            </div>
+                                            <div class="flex justify-between text-lg pt-2 border-t">
+                                                <span class="font-bold">Total</span>
+                                                <span class="font-extrabold gradient-text">$15.98</span>
+                                            </div>
+                                        </div>
+                                    <button class="gradient-bg text-white py-4 rounded-2xl font-bold">Place Order</button>
+                                </div>
+                                
+                                <!-- Mockup Screen 4 -->
+                                <div class="mockup-screen hidden absolute inset-0 bg-gradient-to-br from-orange-50 to-white p-6 flex flex-col" data-screen="4">
+                                    <div class="text-center mb-4">
+                                        <div class="text-lg font-bold">Order Tracking</div>
+                                    </div>
+                                    <div class="bg-white rounded-2xl p-4 shadow-sm mb-4">
+                                        <div class="text-xs text-gray-500 mb-1">ESTIMATED DELIVERY</div>
+                                        <div class="text-2xl font-extrabold gradient-text">18-22 min</div>
+                                    </div>
+                                    <div class="flex-1 flex items-center justify-center mb-4">
+                                        <div class="relative">
+                                            <div class="w-40 h-40 gradient-bg-light rounded-full flex items-center justify-center pulse-ring">
+                                                <i data-lucide="bike" class="w-20 h-20 text-[#FF6B35]"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white rounded-2xl p-4 shadow-sm space-y-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center">
+                                                <i data-lucide="check" class="w-5 h-5 text-white"></i>
+                                            </div>
+                                            <div class="text-sm font-semibold">Order Confirmed</div>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center">
+                                                <i data-lucide="check" class="w-5 h-5 text-white"></i>
+                                            </div>
+                                            <div class="text-sm font-semibold">Preparing Food</div>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-8 h-8 gradient-bg rounded-full flex items-center justify-center">
+                                                <i data-lucide="bike" class="w-5 h-5 text-white"></i>
+                                            </div>
+                                            <div class="text-sm font-bold text-[#FF6B35]">Out for Delivery</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-16 md:py-24 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12 md:mb-16">
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-4">Frequently Asked Questions</h2>
+            <p class="text-lg text-gray-600">Everything you need to know about QuickBite</p>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <button class="faq-toggle w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
+                    <span class="text-lg font-bold pr-8">How long does delivery typically take?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-[#FF6B35] flex-shrink-0 transition-transform"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6">
+                    <p class="text-gray-600 leading-relaxed">Most orders arrive within 24 minutes on average. Delivery time depends on your location, restaurant prep time, and traffic conditions. You can track your order in real-time through the app.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <button class="faq-toggle w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
+                    <span class="text-lg font-bold pr-8">What are the delivery fees?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-[#FF6B35] flex-shrink-0 transition-transform"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6">
+                    <p class="text-gray-600 leading-relaxed">Delivery fees start at $1.99 and vary based on distance from the restaurant. We often run free delivery promotions with no minimum order. QuickBite Plus members enjoy unlimited free delivery on all orders.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <button class="faq-toggle w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
+                    <span class="text-lg font-bold pr-8">Can I schedule an order for later?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-[#FF6B35] flex-shrink-0 transition-transform"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6">
+                    <p class="text-gray-600 leading-relaxed">Yes! You can schedule orders up to 7 days in advance. Just select your preferred delivery date and time window during checkout. Perfect for planning meals or events.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <button class="faq-toggle w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors">
+                    <span class="text-lg font-bold pr-8">What if there's an issue with my order?</span>
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-[#FF6B35] flex-shrink-0 transition-transform"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6">
+                    <p class="text-gray-600 leading-relaxed">Our 24/7 customer support team is here to help. If your order is incorrect, damaged, or delayed, contact us through the app and we'll make it right with a refund or credit. Your satisfaction is guaranteed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 md:py-24 bg-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="gradient-bg rounded-3xl p-8 md:p-16 text-center relative overflow-hidden">
+            <div class="absolute inset-0 hero-pattern opacity-10"></div>
+            <div class="relative z-10">
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Ready to Order?</h2>
+                <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">Join millions who choose QuickBite for fast, reliable food delivery. Your first order ships free!</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <button class="bg-white text-[#FF6B35] px-8 py-4 rounded-full font-bold text-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+                        <i data-lucide="download" class="w-5 h-5"></i>
+                        Download the App
+                    </button>
+                    <button class="bg-transparent text-white px-8 py-4 rounded-full font-bold text-lg border-2 border-white hover:bg-white hover:text-[#FF6B35] transition-all duration-300 flex items-center justify-center gap-2">
+                        <i data-lucide="globe" class="w-5 h-5"></i>
+                        Order on Web
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+            <div class="col-span-2 lg:col-span-1">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-9 h-9 gradient-bg rounded-xl flex items-center justify-center">
+                        <i data-lucide="utensils" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <span class="text-2xl font-extrabold text-white">QuickBite</span>
+                </div>
+                <p class="text-sm mb-4">Delivering happiness, one meal at a time.</p>
+                <div class="flex gap-3">
+                    <a href="#" class="w-9 h-9 bg-gray-800 hover:bg-[#FF6B35] rounded-lg flex items-center justify-center transition-colors">
+                        <i data-lucide="facebook" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="w-9 h-9 bg-gray-800 hover:bg-[#FF6B35] rounded-lg flex items-center justify-center transition-colors">
+                        <i data-lucide="twitter" class="w-4 h-4"></i>
+                    </a>
+                    <a href="#" class="w-9 h-9 bg-gray-800 hover:bg-[#FF6B35] rounded-lg flex items-center justify-center transition-colors">
+                        <i data-lucide="instagram" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-white font-bold mb-4">Company</h3>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">About Us</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Careers</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Press</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Blog</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-white font-bold mb-4">For You</h3>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">How It Works</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Restaurants</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">QuickBite Plus</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Gift Cards</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-white font-bold mb-4">Partners</h3>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">For Restaurants</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Become a Driver</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Business Orders</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="text-white font-bold mb-4">Support</h3>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Help Center</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Safety</a></li>
+                    <li><a href="#" class="hover:text-[#FF6B35] transition-colors">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+            <div>© 2024 QuickBite. All rights reserved.</div>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-[#FF6B35] transition-colors">Privacy</a>
+                <a href="#" class="hover:text-[#FF6B35] transition-colors">Terms</a>
+                <a href="#" class="hover:text-[#FF6B35] transition-colors">Cookies</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        const icon = mobileMenuBtn.querySelector('i');
+        if (mobileMenu.classList.contains('hidden')) {
+            icon.setAttribute('data-lucide', 'menu');
+        } else {
+            icon.setAttribute('data-lucide', 'x');
+        }
+        lucide.createIcons();
+    });
+    
+    // FAQ Accordion
+    document.querySelectorAll('.faq-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const faqItem = button.closest('.faq-item');
+            const content = faqItem.querySelector('.faq-content');
+            const icon = button.querySelector('i');
+            
+            const isOpen = !content.classList.contains('hidden');
+            
+            // Close all
+            document.querySelectorAll('.faq-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.faq-toggle i').forEach(i => {
+                i.style.transform = 'rotate(0deg)';
+            });
+            
+            // Toggle current
+            if (!isOpen) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        });
+    });
+    
+    // Animated Counters
+    const counters = document.querySelectorAll('.counter');
+    const animateCounter = (counter) => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += step;
+            if (current < target) {
+                counter.textContent = Math.floor(current).toLocaleString();
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target.toLocaleString();
+            }
+        };
+        updateCounter();
+    };
+    
+    // Intersection Observer for Counters
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.classList.contains('counted')) {
+                animateCounter(entry.target);
+                entry.target.classList.add('counted');
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    counters.forEach(counter => counterObserver.observe(counter));
+    
+    // Timeline Step Interaction
+    const stepCards = document.querySelectorAll('.step-card');
+    const stepDots = document.querySelectorAll('.step-dot');
+    const mockupScreens = document.querySelectorAll('.mockup-screen');
+    const progressLine = document.getElementById('progress-line');
+    
+    let currentStep = 1;
+    
+    const updateStep = (step) => {
+        currentStep = step;
+        
+        // Update step cards
+        stepCards.forEach(card => {
+            const cardStep = parseInt(card.getAttribute('data-step'));
+            if (cardStep === step) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
+        });
+        
+        // Update dots
+        stepDots.forEach((dot, index) => {
+            if (index + 1 <= step) {
+                dot.classList.add('active');
+                dot.style.background = 'linear-gradient(135deg, #FF6B35 0%, #F7931E 100%)';
+                dot.style.color = 'white';
+            } else {
+                dot.classList.remove('active');
+                dot.style.background = '';
+                dot.style.color = '';
+            }
+        });
+        
+        // Update mockup screens
+        mockupScreens.forEach(screen => {
+            const screenNum = parseInt(screen.getAttribute('data-screen'));
+            if (screenNum === step) {
+                screen.classList.remove('hidden');
+            } else {
+                screen.classList.add('hidden');
+            }
+        });
+        
+        // Update progress line
+        const progress = ((step - 1) / 3) * 100;
+        progressLine.style.height = progress + '%';
+    };
+    
+    // Click handlers for steps
+    stepCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const step = parseInt(card.getAttribute('data-step'));
+            updateStep(step);
+        });
+    });
+    
+    // Intersection Observer for Timeline Steps
+    const stepObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const step = parseInt(entry.target.getAttribute('data-step'));
+                updateStep(step);
+            }
+        });
+    }, { threshold: 0.6, rootMargin: '-100px 0px -100px 0px' });
+    
+    stepCards.forEach(card => stepObserver.observe(card));
+    
+    // Initialize first step
+    updateStep(1);
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+</script>
+
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

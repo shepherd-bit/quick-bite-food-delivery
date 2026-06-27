@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Order - QuickBite</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'sans-serif'],
+        },
+        colors: {
+          'qb-orange': '#FF6B35',
+          'qb-yellow': '#F7931E',
+        },
+        animation: {
+          'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          'ping-slow': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+          'bounce-subtle': 'bounce 1s infinite',
+          'drive': 'drive 0.3s linear infinite',
+          'traffic-blink': 'traffic-blink 1.5s ease-in-out infinite',
+        },
+        keyframes: {
+          drive: {
+            '0%, 100%': { transform: 'translateY(0px)' },
+            '50%': { transform: 'translateY(-2px)' }
+          },
+          'traffic-blink': {
+            '0%, 100%': { opacity: '1' },
+            '50%': { opacity: '0.4' }
+          }
+        }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+  .gradient-bg {
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .timeline-line {
+    background: linear-gradient(to bottom, #FF6B35 0%, #F7931E var(--progress), #e5e7eb var(--progress), #e5e7eb 100%);
+  }
+  .map-container {
+    background: #f0f4f8;
+    position: relative;
+    overflow: hidden;
+  }
+  .map-grid {
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .street-h {
+    position: absolute;
+    background: linear-gradient(to bottom, #d1d5db 0%, #9ca3af 50%, #d1d5db 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .street-v {
+    position: absolute;
+    background: linear-gradient(to right, #d1d5db 0%, #9ca3af 50%, #d1d5db 100%);
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+  }
+  .street-line {
+    position: absolute;
+    background: repeating-linear-gradient(
+      to right,
+      #fbbf24 0px,
+      #fbbf24 8px,
+      transparent 8px,
+      transparent 16px
+    );
+  }
+  .building {
+    position: absolute;
+    background: linear-gradient(145deg, #e5e7eb, #d1d5db);
+    border: 1px solid #cbd5e1;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.15), inset -1px -1px 2px rgba(255,255,255,0.5);
+    border-radius: 2px;
+  }
+  .building::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+  }
+  .park-area {
+    position: absolute;
+    background: 
+      radial-gradient(circle at 20% 30%, #86efac 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, #4ade80 0%, transparent 50%),
+      linear-gradient(135deg, #bbf7d0 0%, #86efac 100%);
+    border-radius: 12px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .park-tree {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #22c55e 0%, #16a34a 100%);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .river {
+    position: absolute;
+    background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 50%, #60a5fa 100%);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .river::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.1) 0px,
+      rgba(255,255,255,0.1) 20px,
+      transparent 20px,
+      transparent 40px
+    );
+    animation: wave 3s linear infinite;
+  }
+  @keyframes wave {
+    to { transform: translateX(-50%); }
+  }
+  .route-path {
+    stroke-dasharray: 12 8;
+    animation: dashFlow 30s linear infinite;
+    filter: drop-shadow(0 2px 4px rgba(255, 107, 53, 0.4));
+  }
+  @keyframes dashFlow {
+    to {
+      stroke-dashoffset: -500;
+    }
+  }
+  .live-dot {
+    animation: live-pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes live-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 0.7;
+    }
+  }
+  .fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .traffic-light {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    position: absolute;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .traffic-red { background: #ef4444; color: #ef4444; }
+  .traffic-yellow { background: #fbbf24; color: #fbbf24; }
+  .traffic-green { background: #22c55e; color: #22c55e; }
+  .marker-shadow {
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  }
+  .compass {
+    transform-origin: center;
+    transition: transform 0.3s ease;
+  }
+  .street-label {
+    position: absolute;
+    font-size: 8px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.8);
+    padding: 2px 4px;
+    border-radius: 2px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  @media (max-width: 640px) {
+    .street-label { font-size: 6px; padding: 1px 2px; }
+  }
+  .map-legend {
+    font-size: 10px;
+  }
+  @media (min-width: 640px) {
+    .map-legend { font-size: 11px; }
+  }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
+
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16 md:h-20">
+      <!-- Logo -->
+      <div class="flex items-center gap-2">
+        <div class="gradient-bg w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shadow-lg">
+          <i class="fa-solid fa-utensils text-white text-lg md:text-xl"></i>
+        </div>
+        <span class="text-2xl md:text-3xl font-extrabold gradient-text">QuickBite</span>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="#" class="text-gray-600 hover:text-qb-orange font-medium transition">Home</a>
+        <a href="#" class="text-gray-600 hover:text-qb-orange font-medium transition">Restaurants</a>
+        <a href="#" class="text-qb-orange font-semibold transition">Track Order</a>
+        <a href="#" class="text-gray-600 hover:text-qb-orange font-medium transition">Offers</a>
+        <button class="gradient-bg text-white px-6 py-2.5 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
+          Sign In
+        </button>
+      </nav>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" class="md:hidden text-gray-700 p-2">
+        <i class="fa-solid fa-bars text-2xl"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100">
+    <div class="px-4 py-4 space-y-3">
+      <a href="#" class="block py-2 text-gray-600 font-medium">Home</a>
+      <a href="#" class="block py-2 text-gray-600 font-medium">Restaurants</a>
+      <a href="#" class="block py-2 text-qb-orange font-semibold">Track Order</a>
+      <a href="#" class="block py-2 text-gray-600 font-medium">Offers</a>
+      <button class="w-full gradient-bg text-white px-6 py-3 rounded-full font-semibold shadow-lg mt-2">
+        Sign In
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+  
+  <!-- Page Header -->
+  <div class="text-center mb-8 md:mb-12">
+    <h1 class="text-3xl md:text-5xl font-extrabold mb-3">
+      Track Your <span class="gradient-text">Order</span>
+    </h1>
+    <p class="text-gray-600 text-base md:text-lg">Enter your order details to see real-time updates</p>
+  </div>
+
+  <!-- Order Lookup Section -->
+  <div id="lookupSection" class="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-8 border border-gray-100">
+    <div class="grid md:grid-cols-2 gap-4 md:gap-6">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Order Number</label>
+        <div class="relative">
+          <i class="fa-solid fa-receipt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input type="text" id="orderNumber" placeholder="QB123456789" value="QB789012345"
+            class="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-qb-orange focus:ring-4 focus:ring-orange-100 transition outline-none text-base">
+        </div>
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Phone or Email</label>
+        <div class="relative">
+          <i class="fa-solid fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input type="text" id="phoneEmail" placeholder="john@example.com" value="+1 (555) 123-4567"
+            class="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-qb-orange focus:ring-4 focus:ring-orange-100 transition outline-none text-base">
+        </div>
+      </div>
+    </div>
+    <button id="trackBtn" class="w-full md:w-auto mt-6 gradient-bg text-white px-8 py-4 rounded-xl font-bold text-base shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      Track Order
+    </button>
+  </div>
+
+  <!-- Tracking Results -->
+  <div id="trackingResults" class="hidden space-y-6 md:space-y-8">
+    
+    <!-- ETA Banner -->
+    <div class="bg-gradient-to-r from-qb-orange to-qb-yellow rounded-2xl shadow-2xl p-6 md:p-8 text-white">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-center md:text-left">
+          <p class="text-white/90 text-sm font-medium mb-1">Estimated Delivery Time</p>
+          <div class="flex items-center justify-center md:justify-start gap-3">
+            <i class="fa-solid fa-clock text-3xl"></i>
+            <span id="etaTimer" class="text-4xl md:text-5xl font-extrabold">24:15</span>
+          </div>
+          <p class="text-white/90 text-sm mt-2">Your order is on the way!</p>
+        </div>
+        <div class="text-center md:text-right">
+          <p class="text-white/90 text-sm font-medium mb-1">Order ID</p>
+          <p class="text-xl md:text-2xl font-bold">#QB789012345</p>
+          <div class="flex items-center justify-center md:justify-end gap-2 mt-2">
+            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            <span class="text-sm font-medium">Live Tracking</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6 md:gap-8">
+      
+      <!-- Left Column: Map + Timeline -->
+      <div class="lg:col-span-2 space-y-6 md:space-y-8">
+        
+        <!-- Live Map -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+          <div class="p-5 md:p-6 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+              <i class="fa-solid fa-map-location-dot gradient-text"></i>
+              Live Tracking
+            </h2>
+            <div class="flex items-center gap-2">
+              <button id="zoomInBtn" class="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition">
+                <i class="fa-solid fa-plus text-sm"></i>
+              </button>
+              <button id="zoomOutBtn" class="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition">
+                <i class="fa-solid fa-minus text-sm"></i>
+              </button>
+              <button id="centerMapBtn" class="w-9 h-9 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition">
+                <i class="fa-solid fa-location-crosshairs text-sm"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="relative h-[400px] md:h-[550px] map-container map-grid" id="mapContainer">
+            
+            <!-- Streets Horizontal -->
+            <div class="street-h" style="top: 80px; left: 0; right: 0; height: 24px;">
+              <div class="street-line" style="top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%);"></div>
+            </div>
+            <div class="street-h" style="top: 200px; left: 0; right: 0; height: 28px;">
+              <div class="street-line" style="top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%);"></div>
+            </div>
+            <div class="street-h" style="top: 320px; left: 0; right: 0; height: 24px;">
+              <div class="street-line" style="top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%);"></div>
+            </div>
+            <div class="street-h" style="top: 440px; left: 0; right: 0; height: 24px;">
+              <div class="street-line" style="top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-50%);"></div>
+            </div>
+
+            <!-- Streets Vertical -->
+            <div class="street-v" style="left: 100px; top: 0; bottom: 0; width: 24px;">
+              <div class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-yellow-400/60" style="transform: translateX(-50%);"></div>
+            </div>
+            <div class="street-v" style="left: 280px; top: 0; bottom: 0; width: 28px;">
+              <div class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-yellow-400/60" style="transform: translateX(-50%);"></div>
+            </div>
+            <div class="street-v" style="right: 120px; top: 0; bottom: 0; width: 24px;">
+              <div class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-yellow-400/60" style="transform: translateX(-50%);"></div>
+            </div>
+
+            <!-- Street Labels -->
+            <div class="street-label" style="top: 86px; left: 50%;">Main St</div>
+            <div class="street-label" style="top: 206px; left: 50%;">Oak Avenue</div>
+            <div class="street-label" style="top: 326px; left: 50%;">5th Street</div>
+            <div class="street-label" style="top: 250px; left: 98px; transform: rotate(90deg); transform-origin: center;">Broadway</div>
+            <div class="street-label" style="top: 250px; left: 278px; transform: rotate(90deg); transform-origin: center;">Central Blvd</div>
+
+            <!-- Buildings -->
+            <div class="building" style="top: 20px; left: 20px; width: 60px; height: 50px;"></div>
+            <div class="building" style="top: 25px; left: 140px; width: 50px; height: 45px;"></div>
+            <div class="building" style="top: 120px; left: 15px; width: 70px; height: 60px;"></div>
+            <div class="building" style="top: 25px; left: 220px; width: 45px; height: 45px;"></div>
+            <div class="building" style="top: 140px; left: 150px; width: 100px; height: 50px;"></div>
+            <div class="building" style="top: 250px; left: 10px; width: 75px; height: 55px;"></div>
+            <div class="building" style="top: 360px; left: 140px; width: 80px; height: 65px;"></div>
+            <div class="building" style="top: 370px; left: 25px; width: 65px; height: 60px;"></div>
+            <div class="building" style="top: 20px; right: 15px; width: 80px; height: 55px;"></div>
+            <div class="building" style="top: 130px; right: 20px; width: 70px; height: 60px;"></div>
+            <div class="building" style="top: 250px; right: 15px; width: 85px; height: 60px;"></div>
+            <div class="building" style="top: 370px; right: 25px; width: 75px; height: 65px;"></div>
+
+            <!-- Park Area -->
+            <div class="park-area" style="top: 240px; left: 140px; width: 120px; height: 70px;">
+              <div class="park-tree" style="top: 15px; left: 20px;"></div>
+              <div class="park-tree" style="top: 25px; left: 50px;"></div>
+              <div class="park-tree" style="top: 20px; left: 80px;"></div>
+              <div class="park-tree" style="top: 45px; left: 30px;"></div>
+              <div class="park-tree" style="top: 50px; left: 90px;"></div>
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs font-bold text-green-800 opacity-60">PARK</div>
+            </div>
+
+            <!-- River -->
+            <div class="river" style="bottom: 0; left: 0; right: 0; height: 40px;"></div>
+
+            <!-- Traffic Lights -->
+            <div class="traffic-light traffic-red animate-traffic-blink" style="top: 96px; left: 108px;"></div>
+            <div class="traffic-light traffic-green" style="top: 216px; left: 108px;"></div>
+            <div class="traffic-light traffic-yellow animate-traffic-blink" style="top: 336px; left: 108px;"></div>
+            <div class="traffic-light traffic-green" style="top: 216px; left: 296px;"></div>
+            <div class="traffic-light traffic-red animate-traffic-blink" style="top: 216px; right: 128px;"></div>
+
+            <!-- Route SVG -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 10;" id="routeSvg">
+              <defs>
+                <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+                  <stop offset="50%" style="stop-color:#F7931E;stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:#FF6B35;stop-opacity:1" />
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+              <path id="routePath" 
+                d="M 112 460 Q 112 360 112 320 Q 112 280 130 260 Q 150 240 180 230 Q 210 220 250 214 Q 290 208 294 214 Q 296 220 296 260 Q 296 300 298 340 Q 300 380 310 400 Q 320 420 340 440" 
+                stroke="url(#routeGradient)" 
+                stroke-width="6" 
+                fill="none" 
+                class="route-path"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                filter="url(#glow)"/>
+            </svg>
+
+            <!-- Restaurant Marker 1 -->
+            <div class="absolute marker-shadow" style="left: 98px; top: 446px; transform: translate(-50%, -50%); z-index: 20;">
+              <div class="relative">
+                <div class="w-12 h-12 md:w-14 md:h-14 gradient-bg rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+                  <i class="fa-solid fa-store text-white text-base md:text-xl"></i>
+                </div>
+                <div class="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white px-2 py-1 rounded-lg shadow-lg text-xs font-bold">
+                  Burger Haven
+                </div>
+              </div>
+            </div>
+
+            <!-- Restaurant Marker 2 -->
+            <div class="absolute marker-shadow hidden md:block" style="left: 50px; top: 180px; transform: translate(-50%, -50%); z-index: 20;">
+              <div class="relative opacity-60">
+                <div class="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center shadow-lg border-3 border-white">
+                  <i class="fa-solid fa-pizza-slice text-white text-sm"></i>
+                </div>
+                <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gray-100 px-2 py-0.5 rounded-lg shadow text-xs font-semibold">
+                  Pizza Corner
+                </div>
+              </div>
+            </div>
+
+            <!-- Driver Marker -->
+            <div id="driverMarker" class="absolute marker-shadow transition-all duration-1000 ease-linear" style="left: 112px; top: 460px; transform: translate(-50%, -50%); z-index: 30;">
+              <div class="relative">
+                <div class="w-14 h-14 md:w-16 md:h-16 bg-white rounded-full flex items-center justify-center shadow-2xl border-4 border-qb-orange">
+                  <i class="fa-solid fa-motorcycle gradient-text text-2xl md:text-3xl animate-drive"></i>
+                </div>
+                <div class="absolute inset-0 bg-qb-orange rounded-full opacity-20 live-dot"></div>
+                <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap gradient-bg px-3 py-1.5 rounded-lg shadow-lg text-xs font-bold text-white">
+                  Alex • 2 min
+                </div>
+              </div>
+            </div>
+
+            <!-- Home/Destination Marker -->
+            <div class="absolute marker-shadow" style="right: 95px; top: 455px; transform: translate(50%, -50%); z-index: 20;">
+              <div class="relative">
+                <div class="w-12 h-12 md:w-14 md:h-14 bg-emerald-600 rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+                  <i class="fa-solid fa-house text-white text-base md:text-xl"></i>
+                </div>
+                <div class="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap bg-emerald-600 px-2 py-1 rounded-lg shadow-lg text-xs font-bold text-white">
+                  Your Location
+                </div>
+              </div>
+            </div>
+
+            <!-- You Are Here Marker -->
+            <div class="absolute marker-shadow hidden md:flex items-center gap-2" style="right: 160px; top: 140px; z-index: 15;">
+              <div class="relative">
+                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-lg border-3 border-white">
+                  <div class="w-3 h-3 bg-white rounded-full animate-ping-slow"></div>
+                </div>
+              <div class="bg-white px-3 py-1.5 rounded-lg shadow-lg text-xs font-bold whitespace-nowrap">
+                You are here
+              </div>
+            </div>
+
+            <!-- Map Controls Overlay -->
+            <div class="absolute top-4 left-4 z-40 space-y-2">
+              <!-- Compass -->
+              <div class="glass-effect rounded-xl p-3 shadow-lg border border-gray-200">
+                <div class="compass w-10 h-10 relative" id="compass">
+                  <div class="absolute inset-0 rounded-full border-2 border-gray-300"></div>
+                  <i class="fa-solid fa-arrow-up absolute top-0 left-1/2 -translate-x-1/2 text-qb-orange text-xs font-bold">N</i>
+                  <div class="absolute top-1/2 left-1/2 w-0.5 h-4 bg-qb-orange -translate-x-1/2 -translate-y-full"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Map Legend -->
+            <div class="absolute bottom-4 left-4 right-4 z-40">
+              <div class="glass-effect rounded-xl p-3 md:p-4 shadow-lg border border-gray-200">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 map-legend">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 gradient-bg rounded-full"></div>
+                    <span class="font-semibold text-gray-700">Restaurant</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-qb-orange rounded-full"></div>
+                    <span class="font-semibold text-gray-700">Driver</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 bg-emerald-600 rounded-full"></div>
+                    <span class="font-semibold text-gray-700">Destination</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="w-8 h-1 bg-gradient-to-r from-qb-orange to-qb-yellow rounded"></div>
+                    <span class="font-semibold text-gray-700">Route</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scale Indicator -->
+            <div class="absolute bottom-4 right-4 z-40">
+              <div class="glass-effect rounded-lg px-3 py-2 shadow-lg border border-gray-200 flex items-center gap-2">
+                <div class="h-0.5 w-12 bg-gray-800"></div>
+                <span class="text-xs font-bold text-gray-700">500m</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Order Timeline -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100">
+          <h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-list-check gradient-text"></i>
+            Order Status
+          </h2>
+          
+          <div class="relative">
+            <div id="timelineLine" class="absolute left-6 top-0 bottom-0 w-1 timeline-line rounded-full" style="--progress: 75%"></div>
+            
+            <div class="space-y-8">
+              <!-- Stage 1: Confirmed -->
+              <div class="relative flex gap-4 md:gap-6 fade-in">
+                <div class="relative z-10">
+                  <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center shadow-lg">
+                    <i class="fa-solid fa-check text-white text-lg"></i>
+                  </div>
+                </div>
+                <div class="flex-1 pt-1">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
+                    <h3 class="font-bold text-lg">Order Confirmed</h3>
+                    <span class="text-sm text-gray-500">Today, 6:15 PM</span>
+                  </div>
+                  <p class="text-gray-600 text-sm md:text-base">Restaurant has received your order</p>
+                </div>
+              </div>
+
+              <!-- Stage 2: Preparing -->
+              <div class="relative flex gap-4 md:gap-6 fade-in" style="animation-delay: 0.1s">
+                <div class="relative z-10">
+                  <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center shadow-lg">
+                    <i class="fa-solid fa-fire-burner text-white text-lg"></i>
+                  </div>
+                <div class="flex-1 pt-1">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
+                    <h3 class="font-bold text-lg">Preparing Food</h3>
+                    <span class="text-sm text-gray-500">Today, 6:18 PM</span>
+                  </div>
+                  <p class="text-gray-600 text-sm md:text-base">Chef is preparing your delicious meal</p>
+                </div>
+              </div>
+
+              <!-- Stage 3: Out for Delivery - Active -->
+              <div id="deliveryStage" class="relative flex gap-4 md:gap-6 fade-in" style="animation-delay: 0.2s">
+                <div class="relative z-10">
+                  <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center shadow-lg ring-4 ring-orange-200 animate-pulse-slow">
+                    <i class="fa-solid fa-motorcycle text-white text-lg"></i>
+                  </div>
+                </div>
+                <div class="flex-1 pt-1">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
+                    <h3 class="font-bold text-lg">Out for Delivery</h3>
+                    <span class="text-sm text-gray-500" id="deliveryTime">Today, 6:35 PM</span>
+                  </div>
+                  <p class="text-gray-600 text-sm md:text-base">Driver is on the way to your location</p>
+                  <div class="mt-2 inline-flex items-center gap-2 bg-orange-50 text-qb-orange px-3 py-1.5 rounded-lg text-sm font-semibold">
+                    <span class="w-2 h-2 bg-qb-orange rounded-full animate-pulse"></span>
+                    In Progress
+                  </div>
+                </div>
+              </div>
+
+              <!-- Stage 4: Delivered -->
+              <div id="deliveredStage" class="relative flex gap-4 md:gap-6 opacity-40 fade-in" style="animation-delay: 0.3s">
+                <div class="relative z-10">
+                  <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-house-circle-check text-white text-lg"></i>
+                  </div>
+                </div>
+                <div class="flex-1 pt-1">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
+                    <h3 class="font-bold text-lg text-gray-500">Delivered</h3>
+                    <span class="text-sm text-gray-400">Pending</span>
+                  </div>
+                  <p class="text-gray-500 text-sm md:text-base">Enjoy your meal!</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Updates Feed -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100">
+          <h2 class="text-xl md:text-2xl font-bold mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-bell gradient-text"></i>
+            Live Updates
+          </h2>
+          <div id="updatesFeed" class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+            <div class="flex gap-3 p-4 bg-orange-50 rounded-xl border border-orange-100">
+              <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-motorcycle text-white"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold text-sm">Driver picked up your order</p>
+                <p class="text-xs text-gray-500 mt-1">Just now • 6:35 PM</p>
+              </div>
+            </div>
+            <div class="flex gap-3 p-4 bg-gray-50 rounded-xl">
+              <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-check text-white"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold text-sm">Food is ready for pickup</p>
+                <p class="text-xs text-gray-500 mt-1">3 mins ago • 6:32 PM</p>
+              </div>
+            <div class="flex gap-3 p-4 bg-gray-50 rounded-xl">
+              <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-kitchen-set text-white"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold text-sm">Chef started preparing your order</p>
+                <p class="text-xs text-gray-500 mt-1">20 mins ago • 6:18 PM</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Order & Driver Info -->
+      <div class="space-y-6 md:space-y-8">
+        
+        <!-- Driver Info Card -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-user gradient-text"></i>
+            Your Driver
+          </h2>
+          <div class="flex items-center gap-4 mb-4">
+            <div class="relative">
+              <img src="https://i.pravatar.cc/150?img=12" alt="Driver" class="w-16 h-16 rounded-full object-cover border-4 border-orange-100">
+              <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white"></div>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-bold text-lg">Alex Rodriguez</h3>
+              <div class="flex items-center gap-1 text-sm">
+                <i class="fa-solid fa-star text-yellow-400"></i>
+                <span class="font-semibold">4.9</span>
+                <span class="text-gray-500">(234 deliveries)</span>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 rounded-xl p-4 mb-4 space-y-2">
+            <div class="flex items-center gap-2 text-sm">
+              <i class="fa-solid fa-motorcycle text-qb-orange"></i>
+              <span class="text-gray-600">Vehicle:</span>
+              <span class="font-semibold">Honda PCX - Blue</span>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+              <i class="fa-solid fa-id-card text-qb-orange"></i>
+              <span class="text-gray-600">License:</span>
+              <span class="font-semibold">ABC 1234</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <button id="callBtn" class="gradient-bg text-white py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-phone"></i>
+              Call
+            </button>
+            <button id="messageBtn" class="bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-message"></i>
+              Message
+            </button>
+          </div>
+        </div>
+
+        <!-- Order Details Card -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-receipt gradient-text"></i>
+            Order Details
+          </h2>
+          
+          <!-- Restaurant -->
+          <div class="flex items-center gap-3 pb-4 mb-4 border-b border-gray-100">
+            <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center">
+              <i class="fa-solid fa-store text-white"></i>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Restaurant</p>
+              <p class="font-bold">Burger Haven</p>
+            </div>
+          </div>
+
+          <!-- Items -->
+          <div class="space-y-3 pb-4 mb-4 border-b border-gray-100">
+            <div class="flex justify-between items-start gap-3">
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold truncate">Classic Cheeseburger</p>
+                <p class="text-xs text-gray-500">Extra cheese, No onions</p>
+              </div>
+              <span class="text-gray-600 text-sm flex-shrink-0">x1</span>
+              <span class="font-semibold ml-2 flex-shrink-0">$12.99</span>
+            </div>
+            <div class="flex justify-between items-start gap-3">
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold truncate">Loaded Fries</p>
+                <p class="text-xs text-gray-500">Large, Bacon bits</p>
+              </div>
+              <span class="text-gray-600 text-sm flex-shrink-0">x1</span>
+              <span class="font-semibold ml-2 flex-shrink-0">$6.99</span>
+            </div>
+            <div class="flex justify-between items-start gap-3">
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold truncate">Chocolate Shake</p>
+                <p class="text-xs text-gray-500">Medium</p>
+              </div>
+              <span class="text-gray-600 text-sm flex-shrink-0">x1</span>
+              <span class="font-semibold ml-2 flex-shrink-0">$4.99</span>
+            </div>
+          </div>
+
+          <!-- Pricing -->
+          <div class="space-y-2 pb-4 mb-4 border-b border-gray-100 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Subtotal</span>
+              <span class="font-semibold">$24.97</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Delivery Fee</span>
+              <span class="font-semibold">$2.99</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Tax</span>
+              <span class="font-semibold">$2.24</span>
+            </div>
+            <div class="flex justify-between text-green-600">
+              <span>Discount</span>
+              <span class="font-semibold">-$5.00</span>
+            </div>
+          </div>
+
+          <!-- Total -->
+          <div class="flex justify-between items-center mb-6">
+            <span class="text-lg font-bold">Total</span>
+            <span class="text-2xl font-extrabold gradient-text">$25.20</span>
+          </div>
+
+          <!-- Delivery Address -->
+          <div class="bg-gray-50 rounded-xl p-4">
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-location-dot text-qb-orange mt-1"></i>
+              <div class="flex-1">
+                <p class="text-xs text-gray-500 mb-1">Delivery Address</p>
+                <p class="font-semibold text-sm">123 Main Street, Apt 4B</p>
+                <p class="text-gray-600 text-sm">New York, NY 10001</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="gradient-bg rounded-2xl shadow-xl p-6 text-white">
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-headset text-2xl"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-lg mb-1">Need Help?</h3>
+              <p class="text-white/90 text-sm">Our support team is here 24/7</p>
+            </div>
+          </div>
+          <button id="supportBtn" class="w-full bg-white text-qb-orange py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-comments"></i>
+            Start Live Chat
+          </button>
+          <div class="mt-4 pt-4 border-t border-white/20 text-center">
+            <p class="text-xs text-white/80">Or call us at</p>
+            <p class="font-bold text-lg">1-800-QUICK-BITE</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-300 mt-16 md:mt-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="gradient-bg w-10 h-10 rounded-xl flex items-center justify-center">
+            <i class="fa-solid fa-utensils text-white"></i>
+          </div>
+          <span class="text-2xl font-extrabold text-white">QuickBite</span>
+        </div>
+        <p class="text-sm text-gray-400 mb-4">Delivering happiness, one bite at a time.</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-qb-orange transition">
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+          <a href="#" class="w-9 h-9 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-qb-orange transition">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="#" class="w-9 h-9 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-qb-orange transition">
+            <i class="fa-brands fa-twitter"></i>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h3 class="font-bold text-white mb-4">Company</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-qb-orange transition">About Us</a></li>
+          <li><a href="#" class="hover:text-qb-orange transition">Careers</a></li>
+          <li><a href="#" class="hover:text-qb-orange transition">Blog</a></li>
+          <li><a href="#" class="hover:text-qb-orange transition">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-bold text-white mb-4">Support</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-qb-orange transition">Help Center</a></li>
+          <li><a href="#" class="hover:text-qb-orange transition">Safety</a></li>
+          <li><a href="#" class="hover:text-qb-orange transition">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-qb-orange transition">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="font-bold text-white mb-4">Contact</h3>
+        <ul class="space-y-2 text-sm">
+          <li class="flex items-start gap-2">
+            <i class="fa-solid fa-envelope text-qb-orange mt-1"></i>
+            <span>support@quickbite.com</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i class="fa-solid fa-phone text-qb-orange mt-1"></i>
+            <span>1-800-QUICK-BITE</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i class="fa-solid fa-location-dot text-qb-orange mt-1"></i>
+            <span>New York, NY 10001</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+      <p>&copy; 2024 QuickBite. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast Notification -->
+<div id="toast" class="fixed bottom-6 right-6 glass-effect px-6 py-4 rounded-xl shadow-2xl border border-gray-200 transform translate-y-24 opacity-0 transition-all duration-300 z-50 max-w-sm">
+  <div class="flex items-center gap-3">
+    <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center flex-shrink-0">
+      <i id="toastIcon" class="fa-solid fa-check text-white"></i>
+    </div>
+    <div>
+      <p id="toastTitle" class="font-bold text-sm"></p>
+      <p id="toastMessage" class="text-xs text-gray-600"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Message Modal -->
+<div id="messageModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 md:p-8">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-xl font-bold">Message Driver</h3>
+      <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+        <i class="fa-solid fa-xmark text-2xl"></i>
+      </button>
+    </div>
+    <div class="mb-4">
+      <textarea id="messageInput" rows="4" placeholder="Type your message to Alex..."
+        class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-qb-orange focus:ring-4 focus:ring-orange-100 transition outline-none resize-none"></textarea>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <button id="quickMsg1" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition">I'm outside</button>
+      <button id="quickMsg2" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-medium transition">Leave at door</button>
+    </div>
+    <button id="sendMessage" class="w-full mt-4 gradient-bg text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
+      Send Message
+    </button>
+  </div>
+</div>
+
+<script>
+  // State Management
+  let orderState = {
+    currentStage: 3,
+    etaSeconds: 1455, // 24:15
+    progressStep: 0,
+    driverPosition: { x: 112, y: 460 },
+    mapZoom: 1,
+    routePath: null
+  };
+
+  const routePoints = [
+    { x: 112, y: 460 }, { x: 112, y: 420 }, { x: 112, y: 380 }, { x: 112, y: 340 },
+    { x: 112, y: 320 }, { x: 120, y: 300 }, { x: 130, y: 280 }, { x: 140, y: 260 },
+    { x: 155, y: 245 }, { x: 170, y: 235 }, { x: 190, y: 230 }, { x: 210, y: 225 },
+    { x: 230, y: 220 }, { x: 250, y: 216 }, { x: 270, y: 214 }, { x: 290, y: 213 },
+    { x: 295, y: 215 }, { x: 296, y: 230 }, { x: 296, y: 250 }, { x: 296, y: 270 },
+    { x: 296, y: 290 }, { x: 297, y: 310 }, { x: 298, y: 330 }, { x: 299, y: 350 },
+    { x: 301, y: 370 }, { x: 305, y: 390 }, { x: 313, y: 410 }, { x: 325, y: 430 },
+    { x: 340, y: 440 }
+  ];
+
+  // Mobile Menu Toggle
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  mobileMenuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+    const icon = mobileMenuBtn.querySelector('i');
+    icon.classList.toggle('fa-bars');
+    icon.classList.toggle('fa-xmark');
+  });
+
+  // Track Order Button
+  const trackBtn = document.getElementById('trackBtn');
+  const lookupSection = document.getElementById('lookupSection');
+  const trackingResults = document.getElementById('trackingResults');
+  
+  trackBtn.addEventListener('click', () => {
+    const orderNum = document.getElementById('orderNumber').value;
+    const contact = document.getElementById('phoneEmail').value;
+    
+    if (!orderNum || !contact) {
+      showToast('Missing Info', 'Please enter both order number and contact', 'error');
+      return;
+    }
+    
+    trackBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Searching...';
+    trackBtn.disabled = true;
+    
+    setTimeout(() => {
+      trackingResults.classList.remove('hidden');
+      trackingResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackBtn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Track Order';
+      trackBtn.disabled = false;
+      initMap();
+      startSimulation();
+    }, 800);
+  });
+
+  // Initialize Map
+  function initMap() {
+    orderState.routePath = document.getElementById('routePath');
+    updateMapZoom();
+  }
+
+  // Map Zoom Controls
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
+  const centerMapBtn = document.getElementById('centerMapBtn');
+  const mapContainer = document.getElementById('mapContainer');
+
+  zoomInBtn?.addEventListener('click', () => {
+    orderState.mapZoom = Math.min(orderState.mapZoom + 0.2, 2);
+    updateMapZoom();
+    showToast('Zoomed In', 'Map zoomed to ' + Math.round(orderState.mapZoom * 100) + '%', 'success');
+  });
+
+  zoomOutBtn?.addEventListener('click', () => {
+    orderState.mapZoom = Math.max(orderState.mapZoom - 0.2, 0.6);
+    updateMapZoom();
+    showToast('Zoomed Out', 'Map zoomed to ' + Math.round(orderState.mapZoom * 100) + '%', 'success');
+  });
+
+  centerMapBtn?.addEventListener('click', () => {
+    orderState.mapZoom = 1;
+    updateMapZoom();
+    showToast('Centered', 'Map reset to driver location', 'success');
+  });
+
+  function updateMapZoom() {
+    mapContainer.style.transform = `scale(${orderState.mapZoom})`;
+    mapContainer.style.transformOrigin = 'center center';
+  }
+
+  // ETA Countdown Timer
+  function startCountdown() {
+    const etaTimer = document.getElementById('etaTimer');
+    
+    setInterval(() => {
+      if (orderState.etaSeconds > 0) {
+        orderState.etaSeconds--;
+        const minutes = Math.floor(orderState.etaSeconds / 60);
+        const seconds = orderState.etaSeconds % 60;
+        etaTimer.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }
+    }, 1000);
+  }
+
+  // Simulate Driver Movement Along Route
+  function simulateDriverMovement() {
+    const driverMarker = document.getElementById('driverMarker');
+    const compass = document.getElementById('compass');
+    
+    let currentPoint = 0;
+    let updateCount = 0;
+    
+    const moveInterval = setInterval(() => {
+      if (currentPoint < routePoints.length - 1) {
+        currentPoint++;
+        const pos = routePoints[currentPoint];
+        const prevPos = routePoints[currentPoint - 1];
+        
+        driverMarker.style.left = pos.x + 'px';
+        driverMarker.style.top = pos.y + 'px';
+        
+        // Rotate compass slightly based on movement direction
+        if (compass && prevPos) {
+          const angle = Math.atan2(pos.y - prevPos.y, pos.x - prevPos.x) * 180 / Math.PI;
+          compass.style.transform = `rotate(${angle + 90}deg)`;
+        }
+        
+        if (currentPoint === routePoints.length - 1) {
+          clearInterval(moveInterval);
+          completeDelivery();
+        }
+        
+        // Periodic updates
+        updateCount++;
+        if (updateCount % 6 === 0) {
+          const messages = [
+            'Driver is getting closer',
+            'Just passed Main St intersection',
+            'Taking Oak Avenue now',
+            'Traffic is smooth',
+            'Almost there!'
+          ];
+          addLiveUpdate(messages[Math.floor(Math.random() * messages.length)], 'fa-location-dot', 'blue');
+        }
+      }
+    }, 2000);
+  }
+
+  // Add Live Update
+  function addLiveUpdate(text, icon, color) {
+    const feed = document.getElementById('updatesFeed');
+    const update = document.createElement('div');
+    const colors = {
+      blue: 'bg-blue-500',
+      green: 'bg-green-500',
+      orange: 'gradient-bg'
+    };
+    
+    update.className = 'flex gap-3 p-4 bg-gray-50 rounded-xl fade-in';
+    update.innerHTML = `
+      <div class="w-10 h-10 ${colors[color]} rounded-full flex items-center justify-center flex-shrink-0">
+        <i class="fa-solid ${icon} text-white"></i>
+      </div>
+      <div class="flex-1">
+        <p class="font-semibold text-sm">${text}</p>
+        <p class="text-xs text-gray-500 mt-1">Just now • ${getCurrentTime()}</p>
+      </div>
+    `;
+    
+    feed.insertBefore(update, feed.firstChild);
+    if (feed.children.length > 5) {
+      feed.removeChild(feed.lastChild);
+    }
+  }
+
+  // Complete Delivery
+  function completeDelivery() {
+    const deliveredStage = document.getElementById('deliveredStage');
+    const deliveryStage = document.getElementById('deliveryStage');
+    const timelineLine = document.getElementById('timelineLine');
+    const driverMarker = document.getElementById('driverMarker');
+    
+    deliveredStage.classList.remove('opacity-40');
+    deliveredStage.querySelector('.bg-gray-300').classList.remove('bg-gray-300');
+    deliveredStage.querySelector('.bg-gray-300').classList.add('gradient-bg', 'ring-4', 'ring-orange-200', 'animate-pulse-slow');
+    deliveredStage.querySelector('h3').classList.remove('text-gray-500');
+    deliveredStage.querySelector('p').classList.remove('text-gray-500');
+    deliveredStage.querySelector('span').textContent = 'Today, ' + getCurrentTime();
+    
+    deliveryStage.querySelector('.animate-pulse-slow').classList.remove('animate-pulse-slow', 'ring-4', 'ring-orange-200');
+    const inProgressBadge = deliveryStage.querySelector('.bg-orange-50');
+    if (inProgressBadge) inProgressBadge.remove();
+    
+    timelineLine.style.setProperty('--progress', '100%');
+    
+    // Update driver to destination
+    driverMarker.style.left = '340px';
+    driverMarker.style.top = '440px';
+    driverMarker.querySelector('.gradient-text').className = 'fa-solid fa-circle-check text-green-500 text-2xl md:text-3xl';
+    driverMarker.querySelector('div:last-child').textContent = 'Delivered!';
+    
+    addLiveUpdate('Order delivered successfully! Enjoy your meal 🎉', 'fa-house-circle-check', 'green');
+    showToast('Delivered!', 'Your order has arrived. Enjoy!', 'success');
+    
+    document.getElementById('etaTimer').textContent = '0:00';
+  }
+
+  // Helper Functions
+  function getCurrentTime() {
+    const now = new Date();
+    return now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function showToast(title, message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+    
+    if (type === 'error') {
+      toastIcon.className = 'fa-solid fa-xmark text-white';
+    } else {
+      toastIcon.className = 'fa-solid fa-check text-white';
+    }
+    
+    toast.classList.remove('translate-y-24', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+    
+    setTimeout(() => {
+      toast.classList.add('translate-y-24', 'opacity-0');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+    }, 3000);
+  }
+
+  // Message Modal
+  const messageBtn = document.getElementById('messageBtn');
+  const messageModal = document.getElementById('messageModal');
+  const closeModal = document.getElementById('closeModal');
+  const sendMessage = document.getElementById('sendMessage');
+  const messageInput = document.getElementById('messageInput');
+  
+  messageBtn?.addEventListener('click', () => {
+    messageModal.classList.remove('hidden');
+  });
+  
+  closeModal?.addEventListener('click', () => {
+    messageModal.classList.add('hidden');
+  });
+  
+  messageModal?.addEventListener('click', (e) => {
+    if (e.target === messageModal) {
+      messageModal.classList.add('hidden');
+    }
+  });
+  
+  sendMessage?.addEventListener('click', () => {
+    if (messageInput.value.trim()) {
+      showToast('Message Sent', 'Driver will receive your message', 'success');
+      messageInput.value = '';
+      messageModal.classList.add('hidden');
+      addLiveUpdate('You sent a message to the driver', 'fa-message', 'blue');
+    }
+  });
+
+  // Quick Messages
+  document.getElementById('quickMsg1')?.addEventListener('click', () => {
+    messageInput.value = "I'm outside waiting for you";
+  });
+  document.getElementById('quickMsg2')?.addEventListener('click', () => {
+    messageInput.value = "Please leave the order at my door";
+  });
+
+  // Call Button
+  document.getElementById('callBtn')?.addEventListener('click', () => {
+    showToast('Calling Driver', 'Connecting to Alex Rodriguez...', 'success');
+  });
+
+  // Support Chat Button
+  document.getElementById('supportBtn')?.addEventListener('click', () => {
+    showToast('Live Chat', 'Connecting you to support...', 'success');
+  });
+
+  // Start Simulation
+  function startSimulation() {
+    startCountdown();
+    simulateDriverMovement();
+    
+    // Simulate periodic updates
+    setTimeout(() => {
+      addLiveUpdate('Driver is 5 minutes away', 'fa-location-dot', 'orange');
+    }, 10000);
+    
+    setTimeout(() => {
+      addLiveUpdate('Driver is approaching your location', 'fa-motorcycle', 'orange');
+    }, 18000);
+
+    setTimeout(() => {
+      addLiveUpdate('Heavy traffic on Oak Avenue, rerouting', 'fa-traffic-light', 'blue');
+    }, 25000);
+  }
+
+  // Auto-show results on page load for demo
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      trackBtn.click();
+    }, 500);
+  });
+</script>
+
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>

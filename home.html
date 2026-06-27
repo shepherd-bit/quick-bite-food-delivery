@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickBite - Food Delivery Made Simple</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+        font-family: 'Inter', sans-serif;
+        scroll-behavior: smooth;
+    }
+    
+    .gradient-bg {
+        background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .hero-pattern {
+        background-image: radial-gradient(circle at 20% 50%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                          radial-gradient(circle at 80% 80%, rgba(247, 147, 30, 0.1) 0%, transparent 50%);
+    }
+    
+    .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-primary {
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(255, 107, 53, 0.35);
+    }
+    
+    .mobile-menu {
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .mobile-menu.active {
+        transform: translateX(0);
+    }
+    
+    .modal {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .modal.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .modal-content {
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+    
+    .modal.active .modal-content {
+        transform: scale(1);
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    .float-animation {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .testimonial-slider {
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+    }
+    
+    .testimonial-slide {
+        scroll-snap-align: start;
+    }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900 overflow-x-hidden">
+    
+    <!-- Header -->
+    <header class="fixed w-full top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
+        <nav class="container mx-auto px-4 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                        <i class="fas fa-burger text-white text-xl"></i>
+                    </div>
+                    <span class="text-2xl font-extrabold">
+                        Quick<span class="gradient-text">Bite</span>
+                    </span>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#home" class="text-gray-700 hover:text-orange-500 font-medium transition">Home</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-orange-500 font-medium transition">How It Works</a>
+                    <a href="#restaurants" class="text-gray-700 hover:text-orange-500 font-medium transition">Restaurants</a>
+                    <a href="#download" class="text-gray-700 hover:text-orange-500 font-medium transition">Download</a>
+                    <a href="#testimonials" class="text-gray-700 hover:text-orange-500 font-medium transition">Reviews</a>
+                </div>
+                
+                <!-- CTA Buttons Desktop -->
+                <div class="hidden md:flex items-center gap-4">
+                    <button class="text-gray-700 hover:text-orange-500 font-semibold transition">
+                        Log In
+                    </button>
+                    <button onclick="openModal()" class="btn-primary text-white px-6 py-2.5 rounded-full font-semibold">
+                        Order Now
+                    </button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="menuBtn" class="md:hidden text-gray-700 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="mobile-menu md:hidden fixed top-16 right-0 w-64 h-screen bg-white shadow-2xl">
+            <div class="flex flex-col p-6 gap-6">
+                <a href="#home" class="text-gray-700 hover:text-orange-500 font-medium transition mobile-link">Home</a>
+                <a href="#how-it-works" class="text-gray-700 hover:text-orange-500 font-medium transition mobile-link">How It Works</a>
+                <a href="#restaurants" class="text-gray-700 hover:text-orange-500 font-medium transition mobile-link">Restaurants</a>
+                <a href="#download" class="text-gray-700 hover:text-orange-500 font-medium transition mobile-link">Download</a>
+                <a href="#testimonials" class="text-gray-700 hover:text-orange-500 font-medium transition mobile-link">Reviews</a>
+                <hr class="border-gray-200">
+                <button class="text-gray-700 hover:text-orange-500 font-semibold transition text-left">
+                    Log In
+                </button>
+                <button onclick="openModal()" class="btn-primary text-white px-6 py-3 rounded-full font-semibold w-full">
+                    Order Now
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section id="home" class="pt-24 md:pt-32 pb-16 md:pb-24 hero-pattern overflow-hidden">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Hero Content -->
+                <div class="text-center md:text-left">
+                    <div class="inline-block mb-4 px-4 py-2 bg-orange-100 rounded-full">
+                        <span class="text-orange-600 font-semibold text-sm">
+                            <i class="fas fa-bolt mr-2"></i>Delivery in 30 minutes or less
+                        </span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
+                        Delicious Food <br>
+                        <span class="gradient-text">Delivered Fast</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
+                        Order from your favorite local restaurants and get fresh, hot meals delivered right to your doorstep. No fees on your first order!
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <button onclick="openModal()" class="btn-primary text-white px-8 py-4 rounded-full font-semibold text-lg shadow-lg">
+                            <i class="fas fa-utensils mr-2"></i>Order Now
+                        </button>
+                        <button onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})" class="bg-white text-gray-800 px-8 py-4 rounded-full font-semibold text-lg border-2 border-gray-200 hover:border-orange-500 transition">
+                            <i class="fas fa-play-circle mr-2"></i>How It Works
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-8 mt-10 justify-center md:justify-start">
+                        <div>
+                            <div class="text-3xl font-bold gradient-text">10K+</div>
+                            <div class="text-sm text-gray-600">Restaurants</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold gradient-text">2M+</div>
+                            <div class="text-sm text-gray-600">Happy Users</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold gradient-text">4.9★</div>
+                            <div class="text-sm text-gray-600">App Rating</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hero Image -->
+                <div class="relative">
+                    <div class="relative z-10">
+                        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" 
+                             alt="Delicious Food" 
+                             class="rounded-3xl shadow-2xl w-full float-animation">
+                    </div>
+                    <!-- Floating Cards -->
+                    <div class="absolute -top-6 -left-6 bg-white p-4 rounded-2xl shadow-xl hidden lg:block float-animation" style="animation-delay: 1s;">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center">
+                                <i class="fas fa-truck text-white"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm">Fast Delivery</div>
+                                <div class="text-xs text-gray-500">25-30 mins</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-2xl shadow-xl hidden lg:block float-animation" style="animation-delay: 2s;">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-sm">1,200+ Reviews</div>
+                                <div class="text-xs text-gray-500">⭐ 4.9 Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-orange-500 font-semibold text-sm uppercase tracking-wider">How It Works</span>
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-4">
+                    Get Food in 3 Easy Steps
+                </h2>
+                <p class="text-gray-600 text-lg">
+                    Ordering your favorite meal has never been easier. Follow these simple steps and enjoy!
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+                <!-- Step 1 -->
+                <div class="text-center card-hover bg-gray-50 p-8 rounded-3xl">
+                    <div class="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6 transform -rotate-3">
+                        <i class="fas fa-search text-white text-3xl"></i>
+                    </div>
+                    <div class="text-orange-500 font-bold text-sm mb-2">STEP 01</div>
+                    <h3 class="text-2xl font-bold mb-4">Choose Restaurant</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Browse thousands of restaurants and cuisines near you. Filter by ratings, price, and delivery time.
+                    </p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="text-center card-hover bg-gray-50 p-8 rounded-3xl">
+                    <div class="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6 transform rotate-3">
+                        <i class="fas fa-shopping-bag text-white text-3xl"></i>
+                    </div>
+                    <div class="text-orange-500 font-bold text-sm mb-2">STEP 02</div>
+                    <h3 class="text-2xl font-bold mb-4">Select Your Meal</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Pick your favorite dishes, customize them, and add to cart. Apply coupons for extra savings.
+                    </p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="text-center card-hover bg-gray-50 p-8 rounded-3xl">
+                    <div class="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6 transform -rotate-3">
+                        <i class="fas fa-home text-white text-3xl"></i>
+                    </div>
+                    <div class="text-orange-500 font-bold text-sm mb-2">STEP 03</div>
+                    <h3 class="text-2xl font-bold mb-4">Enjoy Your Food</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Track your order in real-time and get it delivered to your door in 30 minutes or less.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Popular Restaurants / Categories Section -->
+    <section id="restaurants" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-6">
+                <div>
+                    <span class="text-orange-500 font-semibold text-sm uppercase tracking-wider">Popular Choices</span>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold mt-3">
+                        Top Food Categories
+                    </h2>
+                </div>
+                <button class="text-orange-600 font-semibold flex items-center gap-2 hover:gap-4 transition-all group self-start md:self-auto">
+                    View All <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </div>
+            
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Category 1 -->
+                <div class="card-hover bg-white rounded-2xl overflow-hidden shadow-md">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=600&q=80" 
+                             alt="Pizza" 
+                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-3 right-3 bg-white px-3 py-1 rounded-full text-sm font-semibold">
+                            <i class="fas fa-star text-yellow-400"></i> 4.8
+                        </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">Pizza</h3>
+                        <p class="text-gray-600 text-sm mb-3">120+ Restaurants</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500 text-sm">
+                                <i class="fas fa-clock mr-1"></i> 25-35 min
+                            </span>
+                            <button class="text-orange-500 font-semibold text-sm hover:text-orange-600">
+                                Explore <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Category 2 -->
+                <div class="card-hover bg-white rounded-2xl overflow-hidden shadow-md">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" 
+                             alt="Burgers" 
+                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-3 right-3 bg-white px-3 py-1 rounded-full text-sm font-semibold">
+                            <i class="fas fa-star text-yellow-400"></i> 4.9
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">Burgers</h3>
+                        <p class="text-gray-600 text-sm mb-3">85+ Restaurants</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500 text-sm">
+                                <i class="fas fa-clock mr-1"></i> 20-30 min
+                            </span>
+                            <button class="text-orange-500 font-semibold text-sm hover:text-orange-600">
+                                Explore <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Category 3 -->
+                <div class="card-hover bg-white rounded-2xl overflow-hidden shadow-md">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=600&q=80" 
+                             alt="Sushi" 
+                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-3 right-3 bg-white px-3 py-1 rounded-full text-sm font-semibold">
+                            <i class="fas fa-star text-yellow-400"></i> 4.7
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">Sushi</h3>
+                        <p class="text-gray-600 text-sm mb-3">45+ Restaurants</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500 text-sm">
+                                <i class="fas fa-clock mr-1"></i> 30-40 min
+                            </span>
+                            <button class="text-orange-500 font-semibold text-sm hover:text-orange-600">
+                                Explore <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Category 4 -->
+                <div class="card-hover bg-white rounded-2xl overflow-hidden shadow-md">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80" 
+                             alt="Mexican" 
+                             class="w-full h-full object-cover hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-3 right-3 bg-white px-3 py-1 rounded-full text-sm font-semibold">
+                            <i class="fas fa-star text-yellow-400"></i> 4.8
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold mb-2">Mexican</h3>
+                        <p class="text-gray-600 text-sm mb-3">60+ Restaurants</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-500 text-sm">
+                                <i class="fas fa-clock mr-1"></i> 25-35 min
+                            </span>
+                            <button class="text-orange-500 font-semibold text-sm hover:text-orange-600">
+                                Explore <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- App Download Section -->
+    <section id="download" class="py-16 md:py-24 bg-white overflow-hidden">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="gradient-bg rounded-3xl p-8 md:p-12 lg:p-16 relative">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="text-white z-10 relative">
+                        <span class="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold inline-block mb-4">
+                            <i class="fas fa-mobile-alt mr-2"></i>Get Our App
+                        </span>
+                        <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6">
+                            Order Food Faster With Our Mobile App
+                        </h2>
+                        <p class="text-white/90 text-lg mb-8 leading-relaxed">
+                            Get exclusive deals, track your order live, and reorder your favorites in just one tap. Download now and get $10 off your first order!
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button class="bg-white text-gray-900 px-6 py-3 rounded-xl font-semibold flex items-center gap-3 hover:shadow-2xl transition justify-center">
+                                <i class="fab fa-apple text-3xl"></i>
+                                <div class="text-left">
+                                    <div class="text-xs">Download on the</div>
+                                    <div class="text-lg leading-tight">App Store</div>
+                                </div>
+                            </button>
+                            <button class="bg-white text-gray-900 px-6 py-3 rounded-xl font-semibold flex items-center gap-3 hover:shadow-2xl transition justify-center">
+                                <i class="fab fa-google-play text-2xl"></i>
+                                <div class="text-left">
+                                    <div class="text-xs">Get it on</div>
+                                    <div class="text-lg leading-tight">Google Play</div>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-6 mt-8">
+                            <div class="flex -space-x-3">
+                                <img src="https://i.pravatar.cc/40?img=1" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                                <img src="https://i.pravatar.cc/40?img=2" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                                <img src="https://i.pravatar.cc/40?img=3" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                                <img src="https://i.pravatar.cc/40?img=4" class="w-10 h-10 rounded-full border-2 border-white" alt="User">
+                            </div>
+                            <div>
+                                <div class="font-bold">2M+ Downloads</div>
+                                <div class="text-sm text-white/80">⭐ 4.9 App Rating</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative h-64 md:h-auto">
+                        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&q=80" 
+                             alt="Mobile App" 
+                             class="rounded-3xl shadow-2xl md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 md:w-80 lg:w-96">
+                    </div>
+                </div>
+                <!-- Decorative Elements -->
+                <div class="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-10 left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 md:py-24 bg-gray-50">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-orange-500 font-semibold text-sm uppercase tracking-wider">Testimonials</span>
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold mt-3 mb-4">
+                    What Our Customers Say
+                </h2>
+                <p class="text-gray-600 text-lg">
+                    Join thousands of happy customers who love QuickBite
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md card-hover">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://i.pravatar.cc/60?img=5" alt="User" class="w-14 h-14 rounded-full">
+                        <div>
+                            <div class="font-bold text-lg">Sarah Johnson</div>
+                            <div class="text-sm text-gray-500">Food Blogger</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed">
+                        "QuickBite has changed how I order food! The app is super easy to use and the delivery is always on time. Love the variety of restaurants."
+                    </p>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md card-hover">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://i.pravatar.cc/60?img=12" alt="User" class="w-14 h-14 rounded-full">
+                        <div>
+                            <div class="font-bold text-lg">Michael Chen</div>
+                            <div class="text-sm text-gray-500">Software Engineer</div>
+                        </div>
+                    <div class="flex gap-1 mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed">
+                        "Best food delivery app I've used. Real-time tracking is accurate and customer service is amazing. Highly recommend!"
+                    </p>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md card-hover md:col-span-2 lg:col-span-1">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://i.pravatar.cc/60?img=9" alt="User" class="w-14 h-14 rounded-full">
+                        <div>
+                            <div class="font-bold text-lg">Emily Rodriguez</div>
+                            <div class="text-sm text-gray-500">Marketing Manager</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 mb-4">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <p class="text-gray-600 leading-relaxed">
+                        "I order lunch every day through QuickBite. The deals and discounts are unbeatable. Food always arrives hot and fresh!"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 pt-16 pb-8">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+                <!-- Company Info -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
+                            <i class="fas fa-burger text-white text-xl"></i>
+                        </div>
+                        <span class="text-2xl font-extrabold text-white">
+                            Quick<span class="gradient-text">Bite</span>
+                        </span>
+                    </div>
+                    <p class="text-gray-400 mb-6 leading-relaxed">
+                        Delivering happiness to your doorstep. Order from 10,000+ restaurants and get your favorite meals delivered in 30 minutes or less.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-orange-500 transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-orange-500 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-orange-500 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-orange-500 transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Company Links -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">Company</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-orange-500 transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Careers</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Blog</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Press</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Support Links -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">Support</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-orange-500 transition">Help Center</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Safety</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-orange-500 transition">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4">Contact</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-orange-500"></i>
+                            <span>123 Food Street, NY 10001</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone text-orange-500"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-orange-500"></i>
+                            <span>hello@quickbite.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2024 QuickBite. All rights reserved. Made with <i class="fas fa-heart text-orange-500"></i> for food lovers.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Order Modal -->
+    <div id="orderModal" class="modal fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="modal-content bg-white rounded-3xl p-8 max-w-md w-full relative z-10 shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition">
+                <i class="fas fa-times text-gray-600"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-burger text-white text-3xl"></i>
+                </div>
+                <h3 class="text-3xl font-extrabold mb-2">Ready to Order?</h3>
+                <p class="text-gray-600">Enter your location to see restaurants near you</p>
+            </div>
+            
+            <form id="orderForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Delivery Address</label>
+                    <div class="relative">
+                        <i class="fas fa-map-marker-alt absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Enter your address" 
+                               class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Phone Number</label>
+                    <div class="relative">
+                        <i class="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="tel" placeholder="+1 (555) 000-0000" 
+                               class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none transition">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary w-full text-white py-4 rounded-xl font-semibold text-lg">
+                    <i class="fas fa-search mr-2"></i>Find Restaurants
+                </button>
+                
+                <p class="text-center text-sm text-gray-500">
+                    By continuing, you agree to our <a href="#" class="text-orange-500 font-semibold">Terms</a>
+                </p>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Success Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-green-500 text-white px-6 py-4 rounded-xl shadow-2xl transform translate-y-32 opacity-0 transition-all duration-300 z-[101] flex items-center gap-3">
+        <i class="fas fa-check-circle text-2xl"></i>
+        <div>
+            <div class="font-bold">Success!</div>
+            <div class="text-sm">Redirecting to restaurants...</div>
+        </div>
+    </div>
+    
+    <script>
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            const icon = menuBtn.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+        
+        // Close mobile menu when link is clicked
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                const icon = menuBtn.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-times');
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+                const icon = menuBtn.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-times');
+            }
+        });
+        
+        // Modal Functions
+        const modal = document.getElementById('orderModal');
+        
+        function openModal() {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+        
+        // Order Form Submit
+        const orderForm = document.getElementById('orderForm');
+        const toast = document.getElementById('toast');
+        
+        orderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            closeModal();
+            
+            // Show success toast
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateY(8rem)';
+                toast.style.opacity = '0';
+            }, 3000);
+            
+            orderForm.reset();
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href.length > 1) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        const headerOffset = 80;
+                        const elementPosition = target.offsetTop;
+                        const offsetPosition = elementPosition - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Add shadow to header on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+            } else {
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>
